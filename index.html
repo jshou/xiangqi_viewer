@@ -22,6 +22,9 @@
       var width = BOARD_WIDTH * UNIT + 2*MARGIN;
       var height = BOARD_HEIGHT * UNIT + 2*MARGIN;
 
+      var LEFT_BORDER = MARGIN;
+      var RIGHT_BORDER = BOARD_WIDTH * UNIT + MARGIN;
+
       var lineGraph = d3.select("#xiangqi-example")
       .append("svg:svg")
       .attr("width", width)
@@ -32,9 +35,9 @@
         var height = MARGIN + j * UNIT;
 
         lineGraph.append("svg:line")
-        .attr("x1", MARGIN)
+        .attr("x1", LEFT_BORDER)
         .attr("y1", height)
-        .attr("x2", BOARD_WIDTH * UNIT + MARGIN)
+        .attr("x2", RIGHT_BORDER)
         .attr("y2", height)
         .style("stroke", BOARD_COLOR)
         .style("stroke-width", STROKE_WIDTH);
@@ -68,17 +71,17 @@
 
       // left and right edges
       lineGraph.append("svg:line")
-      .attr("x1", MARGIN)
+      .attr("x1", LEFT_BORDER)
       .attr("y1", MARGIN - STROKE_WIDTH/2)
-      .attr("x2", MARGIN)
+      .attr("x2", LEFT_BORDER)
       .attr("y2", MARGIN + UNIT * BOARD_HEIGHT + STROKE_WIDTH/2)
       .style("stroke", BOARD_COLOR)
       .style("stroke-width", STROKE_WIDTH);
 
       lineGraph.append("svg:line")
-      .attr("x1", MARGIN + UNIT * BOARD_WIDTH)
+      .attr("x1", RIGHT_BORDER)
       .attr("y1", MARGIN - STROKE_WIDTH/2)
-      .attr("x2", MARGIN + UNIT * BOARD_WIDTH)
+      .attr("x2", RIGHT_BORDER)
       .attr("y2", MARGIN + UNIT * BOARD_HEIGHT + STROKE_WIDTH/2)
       .style("stroke", BOARD_COLOR)
       .style("stroke-width", STROKE_WIDTH);
