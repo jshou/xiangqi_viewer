@@ -34,61 +34,65 @@
       .attr("width", width)
       .attr("height", height);
 
-      // horizontal
-      for (var j = 0; j < BOARD_HEIGHT + 1; j++) {
-        var height = MARGIN + j * UNIT;
+      var drawGrid = function(root) {
+        // horizontal
+        for (var j = 0; j < BOARD_HEIGHT + 1; j++) {
+          var height = MARGIN + j * UNIT;
 
-        lineGraph.append("svg:line")
+          root.append("svg:line")
+          .attr("x1", LEFT_BORDER)
+          .attr("y1", height)
+          .attr("x2", RIGHT_BORDER)
+          .attr("y2", height)
+          .style("stroke", BOARD_COLOR)
+          .style("stroke-width", STROKE_WIDTH);
+        };
+
+        // vertical top half
+        for (var j = 1; j < BOARD_WIDTH; j++) {
+          var offset = MARGIN + j * UNIT;
+
+          root.append("svg:line")
+          .attr("x1", offset)
+          .attr("y1", TOP_BORDER)
+          .attr("x2", offset)
+          .attr("y2", RIVER_TOP)
+          .style("stroke", BOARD_COLOR)
+          .style("stroke-width", STROKE_WIDTH);
+        };
+
+        // vertical bottom half
+        for (var j = 1; j < BOARD_WIDTH; j++) {
+          var offset = MARGIN + j * UNIT;
+
+          root.append("svg:line")
+          .attr("x1", offset)
+          .attr("y1", RIVER_BOT)
+          .attr("x2", offset)
+          .attr("y2", BOT_BORDER)
+          .style("stroke", BOARD_COLOR)
+          .style("stroke-width", STROKE_WIDTH);
+        };
+
+        // left and right edges
+        root.append("svg:line")
         .attr("x1", LEFT_BORDER)
-        .attr("y1", height)
+        .attr("y1", TOP_BORDER - STROKE_WIDTH/2)
+        .attr("x2", LEFT_BORDER)
+        .attr("y2", BOT_BORDER + STROKE_WIDTH/2)
+        .style("stroke", BOARD_COLOR)
+        .style("stroke-width", STROKE_WIDTH);
+
+        root.append("svg:line")
+        .attr("x1", RIGHT_BORDER)
+        .attr("y1", TOP_BORDER - STROKE_WIDTH/2)
         .attr("x2", RIGHT_BORDER)
-        .attr("y2", height)
+        .attr("y2", BOT_BORDER + STROKE_WIDTH/2)
         .style("stroke", BOARD_COLOR)
         .style("stroke-width", STROKE_WIDTH);
       };
 
-      // vertical top half
-      for (var j = 1; j < BOARD_WIDTH; j++) {
-        var offset = MARGIN + j * UNIT;
-
-        lineGraph.append("svg:line")
-        .attr("x1", offset)
-        .attr("y1", TOP_BORDER)
-        .attr("x2", offset)
-        .attr("y2", RIVER_TOP)
-        .style("stroke", BOARD_COLOR)
-        .style("stroke-width", STROKE_WIDTH);
-      };
-
-      // vertical bottom half
-      for (var j = 1; j < BOARD_WIDTH; j++) {
-        var offset = MARGIN + j * UNIT;
-
-        lineGraph.append("svg:line")
-        .attr("x1", offset)
-        .attr("y1", RIVER_BOT)
-        .attr("x2", offset)
-        .attr("y2", BOT_BORDER)
-        .style("stroke", BOARD_COLOR)
-        .style("stroke-width", STROKE_WIDTH);
-      };
-
-      // left and right edges
-      lineGraph.append("svg:line")
-      .attr("x1", LEFT_BORDER)
-      .attr("y1", TOP_BORDER - STROKE_WIDTH/2)
-      .attr("x2", LEFT_BORDER)
-      .attr("y2", BOT_BORDER + STROKE_WIDTH/2)
-      .style("stroke", BOARD_COLOR)
-      .style("stroke-width", STROKE_WIDTH);
-
-      lineGraph.append("svg:line")
-      .attr("x1", RIGHT_BORDER)
-      .attr("y1", TOP_BORDER - STROKE_WIDTH/2)
-      .attr("x2", RIGHT_BORDER)
-      .attr("y2", BOT_BORDER + STROKE_WIDTH/2)
-      .style("stroke", BOARD_COLOR)
-      .style("stroke-width", STROKE_WIDTH);
+      drawGrid(lineGraph);
     </script>
   </body>
 </html>
