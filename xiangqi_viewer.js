@@ -10,12 +10,12 @@ XiangqiViewer.BoardRenderer = function(selector, cellSize, strokeWidth) {
   var width = BOARD_WIDTH * cellSize + 2*MARGIN;
   var height = BOARD_HEIGHT * cellSize + 2*MARGIN;
 
-  var LEFT_BORDER = MARGIN;
-  var RIGHT_BORDER = BOARD_WIDTH * cellSize + MARGIN;
-  var TOP_BORDER = MARGIN;
-  var BOT_BORDER = BOARD_HEIGHT * cellSize + MARGIN;
-  var RIVER_TOP = Math.floor(BOARD_HEIGHT/2) * cellSize + MARGIN;
-  var RIVER_BOT = Math.ceil(BOARD_HEIGHT/2) * cellSize + MARGIN;
+  var leftBorder = MARGIN;
+  var rightBorder = BOARD_WIDTH * cellSize + MARGIN;
+  var topBorder = MARGIN;
+  var botBorder = BOARD_HEIGHT * cellSize + MARGIN;
+  var riverTop = Math.floor(BOARD_HEIGHT/2) * cellSize + MARGIN;
+  var riverBot = Math.ceil(BOARD_HEIGHT/2) * cellSize + MARGIN;
 
   var root = d3.select(selector)
   .append("svg:svg")
@@ -25,10 +25,10 @@ XiangqiViewer.BoardRenderer = function(selector, cellSize, strokeWidth) {
   this.draw = function(selector) {
     // horizontal
     drawHorizontalLines();
-    drawVerticalLines(TOP_BORDER, RIVER_TOP);
-    drawVerticalLines(RIVER_BOT, BOT_BORDER);
-    drawBorder(LEFT_BORDER);
-    drawBorder(RIGHT_BORDER);
+    drawVerticalLines(topBorder, riverTop);
+    drawVerticalLines(riverBot, botBorder);
+    drawBorder(leftBorder);
+    drawBorder(rightBorder);
   };
 
   var drawHorizontalLines = function() {
@@ -36,9 +36,9 @@ XiangqiViewer.BoardRenderer = function(selector, cellSize, strokeWidth) {
       var height = MARGIN + j * cellSize;
 
       root.append("svg:line")
-      .attr("x1", LEFT_BORDER)
+      .attr("x1", leftBorder)
       .attr("y1", height)
-      .attr("x2", RIGHT_BORDER)
+      .attr("x2", rightBorder)
       .attr("y2", height)
       .style("stroke", BOARD_COLOR)
       .style("stroke-width", strokeWidth);
@@ -62,9 +62,9 @@ XiangqiViewer.BoardRenderer = function(selector, cellSize, strokeWidth) {
   var drawBorder = function(x) {
     root.append("svg:line")
     .attr("x1", x)
-    .attr("y1", TOP_BORDER - strokeWidth/2)
+    .attr("y1", topBorder - strokeWidth/2)
     .attr("x2", x)
-    .attr("y2", BOT_BORDER + strokeWidth/2)
+    .attr("y2", botBorder + strokeWidth/2)
     .style("stroke", BOARD_COLOR)
     .style("stroke-width", strokeWidth);
   }
