@@ -12,11 +12,12 @@
     </div>
 
     <script>
-      var UNIT = 50;
+      var UNIT = 70;
       var BOARD_WIDTH = 8;
       var BOARD_HEIGHT = 9;
       var BOARD_COLOR = 'rgb(6, 120, 155)';
       var MARGIN = UNIT;
+      var STROKE_WIDTH = 5;
 
       var width = BOARD_WIDTH * UNIT + 2*MARGIN;
       var height = BOARD_HEIGHT * UNIT + 2*MARGIN;
@@ -36,21 +37,51 @@
         .attr("x2", BOARD_WIDTH * UNIT + MARGIN)
         .attr("y2", height)
         .style("stroke", BOARD_COLOR)
-        .style("stroke-width", 2);
+        .style("stroke-width", STROKE_WIDTH);
       };
 
-      // vertical
-      for (var j = 0; j < BOARD_WIDTH + 1; j++) {
+      // vertical top half
+      for (var j = 1; j < BOARD_WIDTH; j++) {
         var offset = MARGIN + j * UNIT;
 
         lineGraph.append("svg:line")
         .attr("x1", offset)
         .attr("y1", MARGIN)
         .attr("x2", offset)
-        .attr("y2", BOARD_HEIGHT * UNIT + MARGIN)
+        .attr("y2", Math.floor(BOARD_HEIGHT/2) * UNIT + MARGIN)
         .style("stroke", BOARD_COLOR)
-        .style("stroke-width", 2);
+        .style("stroke-width", STROKE_WIDTH);
       };
+
+      // vertical bottom half
+      for (var j = 1; j < BOARD_WIDTH; j++) {
+        var offset = MARGIN + j * UNIT;
+
+        lineGraph.append("svg:line")
+        .attr("x1", offset)
+        .attr("y1", MARGIN + Math.ceil(BOARD_HEIGHT/2) * UNIT)
+        .attr("x2", offset)
+        .attr("y2", Math.floor(BOARD_HEIGHT/2) * UNIT + MARGIN + Math.ceil(BOARD_HEIGHT/2)*UNIT)
+        .style("stroke", BOARD_COLOR)
+        .style("stroke-width", STROKE_WIDTH);
+      };
+
+      // left and right edges
+      lineGraph.append("svg:line")
+      .attr("x1", MARGIN)
+      .attr("y1", MARGIN)
+      .attr("x2", MARGIN)
+      .attr("y2", MARGIN + UNIT * BOARD_HEIGHT)
+      .style("stroke", BOARD_COLOR)
+      .style("stroke-width", STROKE_WIDTH);
+
+      lineGraph.append("svg:line")
+      .attr("x1", MARGIN + UNIT * BOARD_WIDTH)
+      .attr("y1", MARGIN)
+      .attr("x2", MARGIN + UNIT * BOARD_WIDTH)
+      .attr("y2", MARGIN + UNIT * BOARD_HEIGHT)
+      .style("stroke", BOARD_COLOR)
+      .style("stroke-width", STROKE_WIDTH);
     </script>
   </body>
 </html>
