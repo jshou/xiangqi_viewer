@@ -6,6 +6,7 @@ XiangqiViewer.BoardRenderer = function(selector, cellSize, strokeWidth) {
   var BOARD_HEIGHT = 9;
   var BOARD_COLOR = 'rgb(6, 120, 155)';
   var MARGIN = cellSize * 0.70;
+  var XSIZE = 2;
 
   var width = BOARD_WIDTH * cellSize + 2*MARGIN;
   var height = BOARD_HEIGHT * cellSize + 2*MARGIN;
@@ -29,6 +30,8 @@ XiangqiViewer.BoardRenderer = function(selector, cellSize, strokeWidth) {
     drawVerticalLines(riverBot, botBorder);
     drawBorder(leftBorder);
     drawBorder(rightBorder);
+    drawX(topBorder);
+    drawX(botBorder - XSIZE * cellSize);
   };
 
   var drawHorizontalLines = function() {
@@ -65,6 +68,24 @@ XiangqiViewer.BoardRenderer = function(selector, cellSize, strokeWidth) {
     .attr("y1", topBorder - strokeWidth/2)
     .attr("x2", x)
     .attr("y2", botBorder + strokeWidth/2)
+    .style("stroke", BOARD_COLOR)
+    .style("stroke-width", strokeWidth);
+  };
+
+  var drawX = function(top) {
+    root.append("svg:line")
+    .attr("x1", leftBorder + 3 * cellSize)
+    .attr("y1", top)
+    .attr("x2", leftBorder + (3 + XSIZE) * cellSize)
+    .attr("y2", top + XSIZE * cellSize)
+    .style("stroke", BOARD_COLOR)
+    .style("stroke-width", strokeWidth);
+
+    root.append("svg:line")
+    .attr("x1", leftBorder + 3 * cellSize)
+    .attr("y1", top + XSIZE * cellSize)
+    .attr("x2", leftBorder + (3 + XSIZE) * cellSize)
+    .attr("y2", top)
     .style("stroke", BOARD_COLOR)
     .style("stroke-width", strokeWidth);
   }
