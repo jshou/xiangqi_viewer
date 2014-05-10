@@ -24,6 +24,10 @@
 
       var LEFT_BORDER = MARGIN;
       var RIGHT_BORDER = BOARD_WIDTH * UNIT + MARGIN;
+      var TOP_BORDER = MARGIN;
+      var BOT_BORDER = BOARD_HEIGHT * UNIT + MARGIN;
+      var RIVER_TOP = Math.floor(BOARD_HEIGHT/2) * UNIT + MARGIN;
+      var RIVER_BOT = Math.ceil(BOARD_HEIGHT/2) * UNIT + MARGIN;
 
       var lineGraph = d3.select("#xiangqi-example")
       .append("svg:svg")
@@ -49,9 +53,9 @@
 
         lineGraph.append("svg:line")
         .attr("x1", offset)
-        .attr("y1", MARGIN)
+        .attr("y1", TOP_BORDER)
         .attr("x2", offset)
-        .attr("y2", Math.floor(BOARD_HEIGHT/2) * UNIT + MARGIN)
+        .attr("y2", RIVER_TOP)
         .style("stroke", BOARD_COLOR)
         .style("stroke-width", STROKE_WIDTH);
       };
@@ -62,9 +66,9 @@
 
         lineGraph.append("svg:line")
         .attr("x1", offset)
-        .attr("y1", MARGIN + Math.ceil(BOARD_HEIGHT/2) * UNIT)
+        .attr("y1", RIVER_BOT)
         .attr("x2", offset)
-        .attr("y2", Math.floor(BOARD_HEIGHT/2) * UNIT + MARGIN + Math.ceil(BOARD_HEIGHT/2)*UNIT)
+        .attr("y2", BOT_BORDER)
         .style("stroke", BOARD_COLOR)
         .style("stroke-width", STROKE_WIDTH);
       };
@@ -72,17 +76,17 @@
       // left and right edges
       lineGraph.append("svg:line")
       .attr("x1", LEFT_BORDER)
-      .attr("y1", MARGIN - STROKE_WIDTH/2)
+      .attr("y1", TOP_BORDER - STROKE_WIDTH/2)
       .attr("x2", LEFT_BORDER)
-      .attr("y2", MARGIN + UNIT * BOARD_HEIGHT + STROKE_WIDTH/2)
+      .attr("y2", BOT_BORDER + STROKE_WIDTH/2)
       .style("stroke", BOARD_COLOR)
       .style("stroke-width", STROKE_WIDTH);
 
       lineGraph.append("svg:line")
       .attr("x1", RIGHT_BORDER)
-      .attr("y1", MARGIN - STROKE_WIDTH/2)
+      .attr("y1", TOP_BORDER - STROKE_WIDTH/2)
       .attr("x2", RIGHT_BORDER)
-      .attr("y2", MARGIN + UNIT * BOARD_HEIGHT + STROKE_WIDTH/2)
+      .attr("y2", BOT_BORDER + STROKE_WIDTH/2)
       .style("stroke", BOARD_COLOR)
       .style("stroke-width", STROKE_WIDTH);
     </script>
