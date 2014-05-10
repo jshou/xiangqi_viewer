@@ -17,7 +17,7 @@
       var BOARD_HEIGHT = 9;
       var BOARD_COLOR = 'rgb(6, 120, 155)';
       var MARGIN = UNIT;
-      var STROKE_WIDTH = 5;
+      var STROKE_WIDTH = 4;
 
       var width = BOARD_WIDTH * UNIT + 2*MARGIN;
       var height = BOARD_HEIGHT * UNIT + 2*MARGIN;
@@ -69,17 +69,17 @@
       // left and right edges
       lineGraph.append("svg:line")
       .attr("x1", MARGIN)
-      .attr("y1", MARGIN)
+      .attr("y1", MARGIN - STROKE_WIDTH/2)
       .attr("x2", MARGIN)
-      .attr("y2", MARGIN + UNIT * BOARD_HEIGHT)
+      .attr("y2", MARGIN + UNIT * BOARD_HEIGHT + STROKE_WIDTH/2)
       .style("stroke", BOARD_COLOR)
       .style("stroke-width", STROKE_WIDTH);
 
       lineGraph.append("svg:line")
       .attr("x1", MARGIN + UNIT * BOARD_WIDTH)
-      .attr("y1", MARGIN)
+      .attr("y1", MARGIN - STROKE_WIDTH/2)
       .attr("x2", MARGIN + UNIT * BOARD_WIDTH)
-      .attr("y2", MARGIN + UNIT * BOARD_HEIGHT)
+      .attr("y2", MARGIN + UNIT * BOARD_HEIGHT + STROKE_WIDTH/2)
       .style("stroke", BOARD_COLOR)
       .style("stroke-width", STROKE_WIDTH);
     </script>
