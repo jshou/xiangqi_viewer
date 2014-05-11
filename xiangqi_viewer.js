@@ -33,7 +33,16 @@ XiangqiViewer.BoardRenderer = function(selector, cellSize, strokeWidth) {
     drawBorder(rightBorder);
     drawX(topBorder);
     drawX(botBorder - XSIZE * cellSize);
-    drawDots(2, 3, false);
+
+    for (var i = 2; i < 10; i += 2) {
+      drawDots(i, 3, false);
+      drawDots(i, 6, false);
+    }
+
+    for (var i = 0; i < 8; i += 2) {
+      drawDots(i, 3, true);
+      drawDots(i, 6, true);
+    }
   };
 
   var drawHorizontalLines = function() {
