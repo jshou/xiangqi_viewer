@@ -17,6 +17,7 @@ XiangqiViewer.BoardRenderer = function(selector, cellSize, strokeWidth) {
   var botBorder = BOARD_HEIGHT * cellSize + MARGIN;
   var riverTop = Math.floor(BOARD_HEIGHT/2) * cellSize + MARGIN;
   var riverBot = Math.ceil(BOARD_HEIGHT/2) * cellSize + MARGIN;
+  var dotDistance = 2 * strokeWidth;
 
   var root = d3.select(selector)
   .append("svg:svg")
@@ -32,6 +33,7 @@ XiangqiViewer.BoardRenderer = function(selector, cellSize, strokeWidth) {
     drawBorder(rightBorder);
     drawX(topBorder);
     drawX(botBorder - XSIZE * cellSize);
+    drawDots(2, 3, false);
   };
 
   var drawHorizontalLines = function() {
@@ -88,7 +90,25 @@ XiangqiViewer.BoardRenderer = function(selector, cellSize, strokeWidth) {
     .attr("y2", top)
     .style("stroke", BOARD_COLOR)
     .style("stroke-width", strokeWidth);
-  }
+  };
+
+  // x and y are from 0 to (n - 1)
+  var drawDots = function(x, y, isRight) {
+    var directionMultipler = isRight ? -1 : 1;
+    root.append("rect")
+    .attr("x", MARGIN + x * cellSize - dotDistance * directionMultipler - (strokeWidth / 2))
+    .attr("y", MARGIN + y * cellSize - dotDistance - (strokeWidth / 2))
+    .attr("width", strokeWidth)
+    .attr("height", strokeWidth)
+    .style("fill", BOARD_COLOR);
+
+    root.append("rect")
+    .attr("x", MARGIN + x * cellSize - dotDistance  * directionMultipler - (strokeWidth / 2))
+    .attr("y", MARGIN + y * cellSize + dotDistance - (strokeWidth / 2))
+    .attr("width", strokeWidth)
+    .attr("height", strokeWidth)
+    .style("fill", BOARD_COLOR);
+  };
 
   return this;
 };
