@@ -121,3 +121,33 @@ XiangqiViewer.BoardRenderer = function(selector, cellSize, strokeWidth) {
 
   return this;
 };
+
+XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
+  var renderer = new XiangqiViewer.BoardRenderer(selector, cellSize, strokeWidth);
+  renderer.draw();
+
+  var WIDTH = 9
+  var HEIGHT = 10
+  var matrix;
+
+  var initialize = function() {
+    matrix = [];
+
+    for(var i = 0; i < WIDTH; i++) {
+      matrix[i] = [];
+      for(var j = 0; j < HEIGHT; j++) {
+        matrix[i][j] = null;
+      }
+    }
+  };
+
+  this.place = function(x, y, piece) {
+    if (x < 0 || y < 0 || x >= WIDTH || y >= HEIGHT) {
+      throw "x, y coords are out of bounds";
+    }
+
+    matrix[x][y] = piece;
+  };
+
+  initialize();
+}
