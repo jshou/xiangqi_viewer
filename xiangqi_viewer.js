@@ -7,6 +7,7 @@ XiangqiViewer.BoardRenderer = function(selector, cellSize, strokeWidth) {
   var BOARD_COLOR = 'rgb(6, 120, 155)';
   var MARGIN = cellSize * 0.70;
   var XSIZE = 2;
+  var PIECE_SIZE = 0.95 * cellSize;
 
   var width = BOARD_WIDTH * cellSize + 2*MARGIN;
   var height = BOARD_HEIGHT * cellSize + 2*MARGIN;
@@ -119,6 +120,15 @@ XiangqiViewer.BoardRenderer = function(selector, cellSize, strokeWidth) {
     .style("fill", BOARD_COLOR);
   };
 
+  this.putPiece = function(x, y, piece) {
+    root.append('svg:image')
+      .attr('xlink:href', piece.spriteUrl())
+      .attr('x', 50)
+      .attr('y', 50)
+      .attr('width', 200)
+      .attr('height', 200);
+  }
+
   return this;
 };
 
@@ -147,6 +157,7 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
     }
 
     matrix[x][y] = piece;
+    renderer.putPiece(x, y, piece);
   };
 
   this.defaultSetup = function() {
@@ -188,7 +199,16 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
   initialize();
 }
 
-XiangqiViewer.Chariot = function(red) {};
+XiangqiViewer.Chariot = function(red) {
+  this.spriteUrl = function() {
+    if (red) {
+      return "images/chariot_red.svg";
+    } else {
+      return "images/chariot_black.svg";
+    }
+  };
+};
+
 XiangqiViewer.Horse = function(red) {};
 XiangqiViewer.Elephant = function(red) {};
 XiangqiViewer.Advisor = function(red) {};
