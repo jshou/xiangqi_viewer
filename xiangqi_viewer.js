@@ -134,6 +134,17 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
     renderer.putPiece(x, y, piece);
   };
 
+  this.runMove = function(instruction) {
+    if (instruction.length != 4) {
+      throw "illegal instruction format";
+    }
+
+    var positionedPiece = getPositionedPiece(instruction);
+    var move = positionedPiece.piece.getMove(positionedPiece.position, instruction);
+    var from = move.from;
+    var to = move.to;
+  }
+
   this.defaultSetup = function() {
     place(0, 0, new XiangqiViewer.Chariot(false));
     place(1, 0, new XiangqiViewer.Horse(false));
