@@ -115,7 +115,7 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
   var matrix;
 
   var initialize = function() {
-    matrix = [];
+    matrix = []; // rank, file; x, y
 
     for(var i = 0; i < WIDTH; i++) {
       matrix[i] = [];
@@ -123,6 +123,10 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
         matrix[i][j] = null;
       }
     }
+  };
+
+  var get = function(file, rank) {
+    return matrix[file][rank];
   };
 
   var place = function(x, y, piece) {
@@ -134,10 +138,29 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
     renderer.putPiece(x, y, piece);
   };
 
+  var getPositionedPiece(instruction, red) {
+    if (instruction[0] == 'f') {
+    } else if (instruction[0] == 'b') {
+    } else {
+      var instructionPiece = instruction[0];
+      var file = instruction[1];
+
+      for (var i = 0; i < HEIGHT; i++) {
+        var piece = get(file, i);
+        if (piece && piece.code == instructionPiece) {
+          return piece;
+        }
+      }
+
+      throw "no piece on this file";
+    }
+  }
+
   this.runMove = function(instruction) {
     if (instruction.length != 4) {
       throw "illegal instruction format";
     }
+    instruction = instruction.toLowerCase();
 
     var positionedPiece = getPositionedPiece(instruction);
     var move = positionedPiece.piece.getMove(positionedPiece.position, instruction);
