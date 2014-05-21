@@ -143,7 +143,7 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
       for (var j = 0; j < HEIGHT; j++) {
         var piece = get(i, j);
         if (piece && piece.code == pieceCode) {
-          return {piece: piece, position: {x: i, y: j}};
+          return {piece: piece, position: {file: i, rank: j}};
         }
       }
     }
@@ -154,7 +154,7 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
       for (var j = HEIGHT - 1; j >= 0; j--) {
         var piece = get(i, j);
         if (piece && piece.code == pieceCode) {
-          return {piece: piece, position: {x: i, y: j}};
+          return {piece: piece, position: {file: i, rank: j}};
         }
       }
     }
@@ -176,7 +176,7 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
       for (var i = 0; i < HEIGHT; i++) {
         var piece = get(file, i);
         if (piece && piece.code == instructionPiece) {
-          return {piece: piece, position: {x: file, y: i}};
+          return {piece: piece, position: {file: file, rank: i}};
         }
       }
 
@@ -192,8 +192,14 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
 
     var positionedPiece = getPositionedPiece(instruction);
     var move = positionedPiece.piece.getMove(positionedPiece.position, instruction);
-    var from = move.from;
-    var to = move.to;
+
+    var capturedPiece = get(move.from.file, move.from.rank);
+    if (capturedPiece) {
+      matrix[file][rank] = null;
+    }
+
+    history.push({from: move.from, to: move.to, capturedPiece: capturedPiece});
+    positionedPiece.piece.render();
   }
 
   this.defaultSetup = function() {
