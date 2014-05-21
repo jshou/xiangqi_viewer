@@ -160,7 +160,7 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
     }
   };
 
-  var getPositionedPiece(instruction, red) {
+  var getPositionedPiece = function(instruction, red) {
     if (instruction[0] == 'f' && red) {
       return searchBackward(instruction[1]);
     } else if (instruction[0] == 'b' && red) {
