@@ -95,7 +95,7 @@ XiangqiViewer.BoardRenderer = function(element, cellSize, strokeWidth) {
   this.putPiece = function(x, y, piece) {
     var renderedX = MARGIN + cellSize * x - (PIECE_SIZE / 2);
     var renderedY = MARGIN + cellSize * y - (PIECE_SIZE / 2);
-    root.image(piece.spriteUrl())
+    return root.image(piece.spriteUrl())
       .move(renderedX, renderedY)
       .attr({
         width: PIECE_SIZE,
@@ -135,7 +135,7 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
     }
 
     matrix[x][y] = piece;
-    renderer.putPiece(x, y, piece);
+    piece.rendered = renderer.putPiece(x, y, piece);
   };
 
   var searchForward = function(pieceCode) {
