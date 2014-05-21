@@ -138,9 +138,37 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
     renderer.putPiece(x, y, piece);
   };
 
+  var searchForward = function(pieceCode) {
+    for (var i = 0; i < WIDTH; i++) {
+      for (var j = 0; j < HEIGHT; j++) {
+        var piece = get(i, j);
+        if (piece && piece.code == pieceCode) {
+          return {piece: piece, position: {x: i, y: j}};
+        }
+      }
+    }
+  };
+
+  var searchBackward = function(pieceCode) {
+    for (var i = 0; i < WIDTH; i++) {
+      for (var j = HEIGHT - 1; j >= 0; j--) {
+        var piece = get(i, j);
+        if (piece && piece.code == pieceCode) {
+          return {piece: piece, position: {x: i, y: j}};
+        }
+      }
+    }
+  };
+
   var getPositionedPiece(instruction, red) {
-    if (instruction[0] == 'f') {
-    } else if (instruction[0] == 'b') {
+    if (instruction[0] == 'f' && red) {
+      return searchBackward(instruction[1]);
+    } else if (instruction[0] == 'b' && red) {
+      return searchForward(instruction[1]);
+    } else if (instruction[0] == 'f' && !red) {
+      return searchBackward(instruction[1]);
+    } else if (instruction[0] == 'b' && !red) {
+      return searchForward(instruction[1]);
     } else {
       var instructionPiece = instruction[0];
       var file = instruction[1];
@@ -148,7 +176,7 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
       for (var i = 0; i < HEIGHT; i++) {
         var piece = get(file, i);
         if (piece && piece.code == instructionPiece) {
-          return piece;
+          return {piece: piece, position: {x: file, y: i}};
         }
       }
 
