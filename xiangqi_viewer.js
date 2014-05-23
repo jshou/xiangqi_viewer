@@ -1,7 +1,7 @@
 var XiangqiViewer = {}
 window.XiangqiViewer = XiangqiViewer;
 
-XiangqiViewer.BoardRenderer = function(selector, cellSize, strokeWidth) {
+XiangqiViewer.BoardRenderer = function(element, cellSize, strokeWidth) {
   var BOARD_WIDTH = 8;
   var BOARD_HEIGHT = 9;
   var BOARD_COLOR = 'rgb(6, 120, 155)';
@@ -20,10 +20,7 @@ XiangqiViewer.BoardRenderer = function(selector, cellSize, strokeWidth) {
   var riverBot = Math.ceil(BOARD_HEIGHT/2) * cellSize + MARGIN;
   var dotDistance = 2 * strokeWidth;
 
-  var root = d3.select(selector)
-  .append("svg:svg")
-  .attr("width", width)
-  .attr("height", height);
+  var root = SVG('xiangqi-example').width(width).height(height);
 
   this.draw = function(selector) {
     // horizontal
@@ -46,17 +43,18 @@ XiangqiViewer.BoardRenderer = function(selector, cellSize, strokeWidth) {
     }
   };
 
+  var drawBoardLine = function(x1, y1, x2, y2) {
+    root.line(x1, y1, x2, y2).stroke({
+      color: BOARD_COLOR,
+      width: strokeWidth
+    });
+  };
+
   var drawHorizontalLines = function() {
     for (var j = 0; j < BOARD_HEIGHT + 1; j++) {
       var height = MARGIN + j * cellSize;
 
-      root.append("svg:line")
-      .attr("x1", leftBorder)
-      .attr("y1", height)
-      .attr("x2", rightBorder)
-      .attr("y2", height)
-      .style("stroke", BOARD_COLOR)
-      .style("stroke-width", strokeWidth);
+      drawBoardLine(leftBorder, height, rightBorder, height);
     };
   }
 
@@ -64,60 +62,34 @@ XiangqiViewer.BoardRenderer = function(selector, cellSize, strokeWidth) {
     for (var j = 1; j < BOARD_WIDTH; j++) {
       var offset = MARGIN + j * cellSize;
 
-      root.append("svg:line")
-      .attr("x1", offset)
-      .attr("y1", top)
-      .attr("x2", offset)
-      .attr("y2", bottom)
-      .style("stroke", BOARD_COLOR)
-      .style("stroke-width", strokeWidth);
+      drawBoardLine(offset, top, offset, bottom);
     };
   }
 
   var drawBorder = function(x) {
-    root.append("svg:line")
-    .attr("x1", x)
-    .attr("y1", topBorder - strokeWidth/2)
-    .attr("x2", x)
-    .attr("y2", botBorder + strokeWidth/2)
-    .style("stroke", BOARD_COLOR)
-    .style("stroke-width", strokeWidth);
+    drawBoardLine(x, topBorder - strokeWidth/2, x, botBorder + strokeWidth/2);
   };
 
   var drawX = function(top) {
-    root.append("svg:line")
-    .attr("x1", leftBorder + 3 * cellSize)
-    .attr("y1", top)
-    .attr("x2", leftBorder + (3 + XSIZE) * cellSize)
-    .attr("y2", top + XSIZE * cellSize)
-    .style("stroke", BOARD_COLOR)
-    .style("stroke-width", strokeWidth);
-
-    root.append("svg:line")
-    .attr("x1", leftBorder + 3 * cellSize)
-    .attr("y1", top + XSIZE * cellSize)
-    .attr("x2", leftBorder + (3 + XSIZE) * cellSize)
-    .attr("y2", top)
-    .style("stroke", BOARD_COLOR)
-    .style("stroke-width", strokeWidth);
+    var leftEdge = leftBorder + 3 * cellSize;
+    var rightEdge = leftBorder + (3 + XSIZE) * cellSize;
+    var bot = top + XSIZE * cellSize;
+    drawBoardLine(leftEdge, top, rightEdge, bot);
+    drawBoardLine(leftEdge, bot, rightEdge, top);
   };
 
   // x and y are from 0 to (n - 1)
   var drawDots = function(x, y, isRight) {
     var directionMultipler = isRight ? -1 : 1;
-    root.append("rect")
-    .attr("x", MARGIN + x * cellSize - dotDistance * directionMultipler - (strokeWidth / 2))
-    .attr("y", MARGIN + y * cellSize - dotDistance - (strokeWidth / 2))
-    .attr("width", strokeWidth)
-    .attr("height", strokeWidth)
-    .style("fill", BOARD_COLOR);
+    root.rect(strokeWidth, strokeWidth).move(
+      MARGIN + x * cellSize - dotDistance * directionMultipler - (strokeWidth / 2),
+      MARGIN + y * cellSize - dotDistance - (strokeWidth / 2)
+    ).attr({fill: BOARD_COLOR});
 
-    root.append("rect")
-    .attr("x", MARGIN + x * cellSize - dotDistance  * directionMultipler - (strokeWidth / 2))
-    .attr("y", MARGIN + y * cellSize + dotDistance - (strokeWidth / 2))
-    .attr("width", strokeWidth)
-    .attr("height", strokeWidth)
-    .style("fill", BOARD_COLOR);
+    root.rect(strokeWidth, strokeWidth).move(
+      MARGIN + x * cellSize - dotDistance * directionMultipler - (strokeWidth / 2),
+      MARGIN + y * cellSize + dotDistance - (strokeWidth / 2)
+    ).attr({fill: BOARD_COLOR});
   };
 
   this.putPiece = function(x, y, piece) {
