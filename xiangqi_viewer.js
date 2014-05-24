@@ -92,16 +92,26 @@ XiangqiViewer.BoardRenderer = function(element, cellSize, strokeWidth) {
     ).attr({fill: BOARD_COLOR});
   };
 
-  this.putPiece = function(x, y, piece) {
-    var renderedX = MARGIN + cellSize * x - (PIECE_SIZE / 2);
-    var renderedY = MARGIN + cellSize * y - (PIECE_SIZE / 2);
-    root.image(piece.spriteUrl())
-      .move(renderedX, renderedY)
+  var getX = function(file) {
+    return MARGIN + cellSize * file - (PIECE_SIZE / 2);
+  };
+
+  var getY = function(rank) {
+    return MARGIN + cellSize * rank - (PIECE_SIZE / 2);
+  };
+
+  this.putPiece = function(file, rank, piece) {
+    return root.image(piece.spriteUrl())
+      .move(getX(file), getY(rank))
       .attr({
         width: PIECE_SIZE,
         height: PIECE_SIZE
       });
   }
+
+  this.movePiece = function(file, rank, piece) {
+    piece.rendered.move(getX(file), getY(rank));
+  };
 
   return this;
 };
@@ -113,9 +123,11 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
   var WIDTH = 9
   var HEIGHT = 10
   var matrix;
+  var history;
 
   var initialize = function() {
-    matrix = [];
+    history = [];
+    matrix = []; // rank, file; x, y
 
     for(var i = 0; i < WIDTH; i++) {
       matrix[i] = [];
@@ -125,14 +137,96 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
     }
   };
 
+  var get = function(file, rank) {
+    return matrix[file][rank];
+  };
+
   var place = function(x, y, piece) {
     if (x < 0 || y < 0 || x >= WIDTH || y >= HEIGHT) {
       throw "x, y coords are out of bounds";
     }
 
     matrix[x][y] = piece;
-    renderer.putPiece(x, y, piece);
+    piece.rendered = renderer.putPiece(x, y, piece);
   };
+
+  var searchForward = function(pieceCode, red) {
+    for (var i = 0; i < WIDTH; i++) {
+      for (var j = 0; j < HEIGHT; j++) {
+        var piece = get(i, j);
+        if (piece && piece.code == pieceCode) {
+          return {piece: piece, position: {file: i, rank: j}};
+        }
+      }
+    }
+  };
+
+  var searchBackward = function(pieceCode, red) {
+    for (var i = 0; i < WIDTH; i++) {
+      for (var j = HEIGHT - 1; j >= 0; j--) {
+        var piece = get(i, j);
+        if (piece && piece.code == pieceCode && piece.red == red) {
+          return {piece: piece, position: {file: i, rank: j}};
+        }
+      }
+    }
+  };
+
+  var getPositionedPiece = function(instruction, red) {
+    if (instruction[0] == 'f' && red) {
+      return searchBackward(instruction[1], red);
+    } else if (instruction[0] == 'b' && red) {
+      return searchForward(instruction[1], red);
+    } else if (instruction[0] == 'f' && !red) {
+      return searchBackward(instruction[1], red);
+    } else if (instruction[0] == 'b' && !red) {
+      return searchForward(instruction[1], red);
+    } else {
+      var instructionPiece = instruction[0];
+      var file;
+      if (red) {
+        file = 9 - parseInt(instruction[1]);
+      } else {
+        file = parseInt(instruction[1]) - 1;
+      }
+
+      for (var i = 0; i < HEIGHT; i++) {
+        var piece = get(file, i);
+        if (piece && piece.code == instructionPiece && piece.red == red) {
+          return {piece: piece, position: {file: file, rank: i}};
+        }
+      }
+
+      throw "no piece on this file";
+    }
+  }
+
+  this.runMove = function(instruction, red) {
+    if (instruction.length != 4) {
+      throw "illegal instruction format";
+    }
+    instruction = instruction.toLowerCase();
+
+    var positionedPiece = getPositionedPiece(instruction, red);
+    var move = positionedPiece.piece.getMove(positionedPiece.position, instruction);
+
+    // remove captured piece
+    var capturedPiece = get(move.to.file, move.to.rank);
+    if (capturedPiece) {
+      matrix[move.to.file][move.to.rank] = null;
+      capturedPiece.rendered.remove();
+    }
+
+    // push to history
+    history.push({from: move.from, to: move.to, capturedPiece: capturedPiece});
+
+    // update matrix
+    matrix[move.from.file][move.from.rank] = null;
+    matrix[move.to.file][move.to.rank] = positionedPiece.piece;
+
+    //rerender
+    renderer.movePiece(move.to.file, move.to.rank, positionedPiece.piece);
+  }
 
   this.defaultSetup = function() {
     place(0, 0, new XiangqiViewer.Chariot(false));
@@ -174,6 +268,8 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
 }
 
 XiangqiViewer.Chariot = function(red) {
+  this.code = 'r';
+  this.red = red;
   this.spriteUrl = function() {
     if (red) {
       return "images/chariot_red.svg";
@@ -181,9 +277,14 @@ XiangqiViewer.Chariot = function(red) {
       return "images/chariot_black.svg";
     }
   };
+
+  this.getMove = function(position, instruction) {
+  };
 };
 
 XiangqiViewer.Horse = function(red) {
+  this.code = 'h';
+  this.red = red;
   this.spriteUrl = function() {
     if (red) {
       return "images/horse_red.svg";
@@ -191,9 +292,14 @@ XiangqiViewer.Horse = function(red) {
       return "images/horse_black.svg";
     }
   };
+
+  this.getMove = function(position, instruction) {
+  };
 };
 
 XiangqiViewer.Elephant = function(red) {
+  this.code = 'e';
+  this.red = red;
   this.spriteUrl = function() {
     if (red) {
       return "images/elephant_red.svg";
@@ -201,9 +307,14 @@ XiangqiViewer.Elephant = function(red) {
       return "images/elephant_black.svg";
     }
   };
+
+  this.getMove = function(position, instruction) {
+  };
 };
 
 XiangqiViewer.Advisor = function(red) {
+  this.code = 'a';
+  this.red = red;
   this.spriteUrl = function() {
     if (red) {
       return "images/adviser_red.svg";
@@ -211,9 +322,14 @@ XiangqiViewer.Advisor = function(red) {
       return "images/adviser_black.svg";
     }
   };
+
+  this.getMove = function(position, instruction) {
+  };
 };
 
 XiangqiViewer.General = function(red) {
+  this.code = 'g';
+  this.red = red;
   this.spriteUrl = function() {
     if (red) {
       return "images/general_red.svg";
@@ -221,9 +337,14 @@ XiangqiViewer.General = function(red) {
       return "images/general_black.svg";
     }
   };
+
+  this.getMove = function(position, instruction) {
+  };
 };
 
 XiangqiViewer.Pawn = function(red) {
+  this.code = 'p';
+  this.red = red;
   this.spriteUrl = function() {
     if (red) {
       return "images/pawn_red.svg";
@@ -231,14 +352,47 @@ XiangqiViewer.Pawn = function(red) {
       return "images/pawn_black.svg";
     }
   };
+
+  this.getMove = function(position, instruction) {
+  };
 };
 
 XiangqiViewer.Cannon = function(red) {
+  this.code = 'c';
+  this.red = red;
   this.spriteUrl = function() {
     if (red) {
       return "images/cannon_red.svg";
     } else {
       return "images/cannon_black.svg";
     }
+  };
+
+  this.getMove = function(position, instruction) {
+    var operator = instruction[2];
+    var destination = parseInt(instruction[3]);
+    var to = $.extend(true, {}, position);
+
+    if (operator === '-') {
+      if (red) {
+        to.rank += destination;
+      } else {
+        to.rank -= destination;
+      }
+    } else if (operator === '+') {
+      if (red) {
+        to.rank -= destination;
+      } else {
+        to.rank += destination;
+      }
+    } else {
+      if (red) {
+        to.file = 9 - destination;
+      } else {
+        to = destination - 1;
+      }
+    }
+
+    return {from: position, to: to};
   };
 };

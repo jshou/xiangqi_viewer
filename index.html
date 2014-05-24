@@ -14,6 +14,15 @@
     <script>
       var board = new XiangqiViewer.Board($('#xiangqi-example'), 70, 4);
       board.defaultSetup();
+      setTimeout(function() {
+        board.runMove('c2=5', true);
+        setTimeout(function() {
+          board.runMove('c5+4', true);
+          setTimeout(function() {
+            board.runMove('c5+1', true);
+          }, 1000);
+        }, 1000);
+      }, 1000);
     </script>
   </body>
 </html>
