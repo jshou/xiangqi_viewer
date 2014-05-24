@@ -92,16 +92,27 @@ XiangqiViewer.BoardRenderer = function(element, cellSize, strokeWidth) {
     ).attr({fill: BOARD_COLOR});
   };
 
-  this.putPiece = function(x, y, piece) {
-    var renderedX = MARGIN + cellSize * x - (PIECE_SIZE / 2);
-    var renderedY = MARGIN + cellSize * y - (PIECE_SIZE / 2);
+  var getX = function(file) {
+    return MARGIN + cellSize * file - (PIECE_SIZE / 2);
+  };
+
+  var getY = function(rank) {
+    return MARGIN + cellSize * rank - (PIECE_SIZE / 2);
+  };
+
+  this.putPiece = function(file, rank, piece) {
     return root.image(piece.spriteUrl())
-      .move(renderedX, renderedY)
+      .move(getX(file), getY(rank))
       .attr({
         width: PIECE_SIZE,
         height: PIECE_SIZE
       });
   }
+
+  this.movePiece = function(file, rank, piece) {
+    debugger;
+    piece.rendered.move(getX(file), getY(rank));
+  };
 
   return this;
 };
@@ -173,7 +184,12 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
       return searchForward(instruction[1], red);
     } else {
       var instructionPiece = instruction[0];
-      var file = parseInt(instruction[1]) - 1;
+      var file;
+      if (red) {
+        file = 9 - parseInt(instruction[1]);
+      } else {
+        file = parseInt(instruction[1]) - 1;
+      }
 
       for (var i = 0; i < HEIGHT; i++) {
         var piece = get(file, i);
@@ -195,13 +211,14 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
     var positionedPiece = getPositionedPiece(instruction, red);
     var move = positionedPiece.piece.getMove(positionedPiece.position, instruction);
 
-    var capturedPiece = get(move.from.file, move.from.rank);
+    var capturedPiece = get(move.to.file, move.to.rank);
     if (capturedPiece) {
-      matrix[file][rank] = null;
+      matrix[move.to.file][move.to.rank] = null;
+      // TODO: capturedPiece.rendered.remove();
     }
 
     history.push({from: move.from, to: move.to, capturedPiece: capturedPiece});
-    positionedPiece.piece.render();
+    renderer.movePiece(move.to.file, move.to.rank, positionedPiece.piece);
   }
 
   this.defaultSetup = function() {
@@ -243,12 +260,6 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
   initialize();
 }
 
-XiangqiViewer.Piece = function() {
-  this.render = function() {
-    // this.rendered;
-  };
-};
-
 XiangqiViewer.Chariot = function(red) {
   this.code = 'r';
   this.red = red;
@@ -258,6 +269,9 @@ XiangqiViewer.Chariot = function(red) {
     } else {
       return "images/chariot_black.svg";
     }
+  };
+
+  this.getMove = function(position, instruction) {
   };
 };
 
@@ -271,6 +285,9 @@ XiangqiViewer.Horse = function(red) {
       return "images/horse_black.svg";
     }
   };
+
+  this.getMove = function(position, instruction) {
+  };
 };
 
 XiangqiViewer.Elephant = function(red) {
@@ -282,6 +299,9 @@ XiangqiViewer.Elephant = function(red) {
     } else {
       return "images/elephant_black.svg";
     }
+  };
+
+  this.getMove = function(position, instruction) {
   };
 };
 
@@ -295,6 +315,9 @@ XiangqiViewer.Advisor = function(red) {
       return "images/adviser_black.svg";
     }
   };
+
+  this.getMove = function(position, instruction) {
+  };
 };
 
 XiangqiViewer.General = function(red) {
@@ -306,6 +329,9 @@ XiangqiViewer.General = function(red) {
     } else {
       return "images/general_black.svg";
     }
+  };
+
+  this.getMove = function(position, instruction) {
   };
 };
 
@@ -319,6 +345,9 @@ XiangqiViewer.Pawn = function(red) {
       return "images/pawn_black.svg";
     }
   };
+
+  this.getMove = function(position, instruction) {
+  };
 };
 
 XiangqiViewer.Cannon = function(red) {
@@ -330,5 +359,33 @@ XiangqiViewer.Cannon = function(red) {
     } else {
       return "images/cannon_black.svg";
     }
+  };
+
+  this.getMove = function(position, instruction) {
+    var operator = instruction[2];
+    var destination = parseInt(instruction[3]);
+    var to = $.extend(true, {}, position);
+
+    if (operator === '-') {
+      if (red) {
+        to.rank += destination;
+      } else {
+        to.rank -= destination;
+      }
+    } else if (operator === '+') {
+      if (red) {
+        to.rank -= destination;
+      } else {
+        to.rank += destination;
+      }
+    } else {
+      if (red) {
+        to.file = 9 - destination;
+      } else {
+        to = destination - 1;
+      }
+    }
+
+    return {from: position, to: to};
   };
 };
