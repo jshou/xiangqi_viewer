@@ -210,13 +210,21 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
     var positionedPiece = getPositionedPiece(instruction, red);
     var move = positionedPiece.piece.getMove(positionedPiece.position, instruction);
 
+    // remove captured piece
     var capturedPiece = get(move.to.file, move.to.rank);
     if (capturedPiece) {
       matrix[move.to.file][move.to.rank] = null;
       // TODO: capturedPiece.rendered.remove();
     }
 
+    // push to history
     history.push({from: move.from, to: move.to, capturedPiece: capturedPiece});
+
+    // update matrix
+    matrix[move.from.file][move.from.rank] = null;
+    matrix[move.to.file][move.to.rank] = positionedPiece.piece;
+
+    //rerender
     renderer.movePiece(move.to.file, move.to.rank, positionedPiece.piece);
   }
 
