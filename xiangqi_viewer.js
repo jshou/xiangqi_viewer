@@ -311,7 +311,6 @@ XiangqiViewer.Chariot = function(red) {
 
   return me;
 };
-XiangqiViewer.Chariot.prototype = XiangqiViewer.StraightMover;
 
 XiangqiViewer.Horse = function(red) {
   this.code = 'h';
