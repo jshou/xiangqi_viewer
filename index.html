@@ -3,7 +3,7 @@
   <head>
     <title>Xiangqi Viewer</title>
     <script type="text/javascript" src="jquery.js"></script>
-    <script type="text/javascript" src="d3.js"></script>
+    <script type="text/javascript" src="svg.min.js"></script>
     <script type="text/javascript" src="xiangqi_viewer.js"></script>
   </head>
 
@@ -12,7 +12,7 @@
     </div>
 
     <script>
-      var board = new XiangqiViewer.Board('#xiangqi-example', 70, 4);
+      var board = new XiangqiViewer.Board($('#xiangqi-example'), 70, 4);
       board.defaultSetup();
     </script>
   </body>
