@@ -110,7 +110,6 @@ XiangqiViewer.BoardRenderer = function(element, cellSize, strokeWidth) {
   }
 
   this.movePiece = function(file, rank, piece) {
-    debugger;
     piece.rendered.move(getX(file), getY(rank));
   };
 
