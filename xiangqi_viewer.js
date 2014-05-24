@@ -267,8 +267,19 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
   initialize();
 }
 
+XiangqiViewer.Piece = function() {
+  this.getFile = function(instructionFile) {
+    if (this.red) {
+      return 9 - instructionFile;
+    } else {
+      return instructionFile - 1;
+    }
+  };
+};
+
 XiangqiViewer.StraightMover = function() {
-  this.getMove = function(position, instruction) {
+  var me = new XiangqiViewer.Piece();
+  me.getMove = function(position, instruction) {
     var operator = instruction[2];
     var destination = parseInt(instruction[3]);
     var to = $.extend(true, {}, position);
@@ -286,15 +297,13 @@ XiangqiViewer.StraightMover = function() {
         to.rank += destination;
       }
     } else {
-      if (this.red) {
-        to.file = 9 - destination;
-      } else {
-        to.file = destination - 1;
-      }
+      to.file = me.getFile(destination);
     }
 
     return {from: position, to: to};
   };
+
+  return me;
 };
 
 XiangqiViewer.Chariot = function(red) {
@@ -313,9 +322,10 @@ XiangqiViewer.Chariot = function(red) {
 };
 
 XiangqiViewer.Horse = function(red) {
-  this.code = 'h';
-  this.red = red;
-  this.spriteUrl = function() {
+  var me = new XiangqiViewer.Piece();
+  me.code = 'h';
+  me.red = red;
+  me.spriteUrl = function() {
     if (red) {
       return "images/horse_red.svg";
     } else {
@@ -323,8 +333,26 @@ XiangqiViewer.Horse = function(red) {
     }
   };
 
-  this.getMove = function(position, instruction) {
+  me.getMove = function(position, instruction) {
+    var operator = instruction[2];
+    var destination = parseInt(instruction[3]);
+    var to = $.extend(true, {}, position);
+
+    to.file = me.getFile(instruction[3]);
+    var difference = Math.abs(position.file - to.file);
+    var advance = difference % 2 + 1
+    var direction = red ? -1 : 1;
+
+    if (operator === '+') {
+      to.rank += advance * direction;
+    } else {
+      to.rank -= advance * direction;
+    }
+
+    return {from: position, to: to};
   };
+
+  return me;
 };
 
 XiangqiViewer.Elephant = function(red) {
