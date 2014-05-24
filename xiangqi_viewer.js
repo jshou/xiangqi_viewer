@@ -95,12 +95,12 @@ XiangqiViewer.BoardRenderer = function(element, cellSize, strokeWidth) {
   this.putPiece = function(x, y, piece) {
     var renderedX = MARGIN + cellSize * x - (PIECE_SIZE / 2);
     var renderedY = MARGIN + cellSize * y - (PIECE_SIZE / 2);
-    root.append('svg:image')
-      .attr('xlink:href', piece.spriteUrl())
-      .attr('x', renderedX)
-      .attr('y', renderedY)
-      .attr('width', PIECE_SIZE)
-      .attr('height', PIECE_SIZE);
+    root.image(piece.spriteUrl())
+      .move(renderedX, renderedY)
+      .attr({
+        width: PIECE_SIZE,
+        height: PIECE_SIZE
+      });
   }
 
   return this;
