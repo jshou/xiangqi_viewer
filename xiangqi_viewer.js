@@ -140,7 +140,7 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
     piece.rendered = renderer.putPiece(x, y, piece);
   };
 
-  var searchForward = function(pieceCode) {
+  var searchForward = function(pieceCode, red) {
     for (var i = 0; i < WIDTH; i++) {
       for (var j = 0; j < HEIGHT; j++) {
         var piece = get(i, j);
@@ -151,11 +151,11 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
     }
   };
 
-  var searchBackward = function(pieceCode) {
+  var searchBackward = function(pieceCode, red) {
     for (var i = 0; i < WIDTH; i++) {
       for (var j = HEIGHT - 1; j >= 0; j--) {
         var piece = get(i, j);
-        if (piece && piece.code == pieceCode) {
+        if (piece && piece.code == pieceCode && piece.red == red) {
           return {piece: piece, position: {file: i, rank: j}};
         }
       }
@@ -164,20 +164,20 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
 
   var getPositionedPiece = function(instruction, red) {
     if (instruction[0] == 'f' && red) {
-      return searchBackward(instruction[1]);
+      return searchBackward(instruction[1], red);
     } else if (instruction[0] == 'b' && red) {
-      return searchForward(instruction[1]);
+      return searchForward(instruction[1], red);
     } else if (instruction[0] == 'f' && !red) {
-      return searchBackward(instruction[1]);
+      return searchBackward(instruction[1], red);
     } else if (instruction[0] == 'b' && !red) {
-      return searchForward(instruction[1]);
+      return searchForward(instruction[1], red);
     } else {
       var instructionPiece = instruction[0];
-      var file = instruction[1];
+      var file = parseInt(instruction[1]) - 1;
 
       for (var i = 0; i < HEIGHT; i++) {
         var piece = get(file, i);
-        if (piece && piece.code == instructionPiece) {
+        if (piece && piece.code == instructionPiece && piece.red == red) {
           return {piece: piece, position: {file: file, rank: i}};
         }
       }
@@ -186,13 +186,13 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
     }
   }
 
-  this.runMove = function(instruction) {
+  this.runMove = function(instruction, red) {
     if (instruction.length != 4) {
       throw "illegal instruction format";
     }
     instruction = instruction.toLowerCase();
 
-    var positionedPiece = getPositionedPiece(instruction);
+    var positionedPiece = getPositionedPiece(instruction, red);
     var move = positionedPiece.piece.getMove(positionedPiece.position, instruction);
 
     var capturedPiece = get(move.from.file, move.from.rank);
@@ -251,6 +251,7 @@ XiangqiViewer.Piece = function() {
 
 XiangqiViewer.Chariot = function(red) {
   this.code = 'r';
+  this.red = red;
   this.spriteUrl = function() {
     if (red) {
       return "images/chariot_red.svg";
@@ -262,6 +263,7 @@ XiangqiViewer.Chariot = function(red) {
 
 XiangqiViewer.Horse = function(red) {
   this.code = 'h';
+  this.red = red;
   this.spriteUrl = function() {
     if (red) {
       return "images/horse_red.svg";
@@ -273,6 +275,7 @@ XiangqiViewer.Horse = function(red) {
 
 XiangqiViewer.Elephant = function(red) {
   this.code = 'e';
+  this.red = red;
   this.spriteUrl = function() {
     if (red) {
       return "images/elephant_red.svg";
@@ -284,6 +287,7 @@ XiangqiViewer.Elephant = function(red) {
 
 XiangqiViewer.Advisor = function(red) {
   this.code = 'a';
+  this.red = red;
   this.spriteUrl = function() {
     if (red) {
       return "images/adviser_red.svg";
@@ -295,6 +299,7 @@ XiangqiViewer.Advisor = function(red) {
 
 XiangqiViewer.General = function(red) {
   this.code = 'g';
+  this.red = red;
   this.spriteUrl = function() {
     if (red) {
       return "images/general_red.svg";
@@ -306,6 +311,7 @@ XiangqiViewer.General = function(red) {
 
 XiangqiViewer.Pawn = function(red) {
   this.code = 'p';
+  this.red = red;
   this.spriteUrl = function() {
     if (red) {
       return "images/pawn_red.svg";
@@ -317,6 +323,7 @@ XiangqiViewer.Pawn = function(red) {
 
 XiangqiViewer.Cannon = function(red) {
   this.code = 'c';
+  this.red = red;
   this.spriteUrl = function() {
     if (red) {
       return "images/cannon_red.svg";
