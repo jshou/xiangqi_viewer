@@ -214,7 +214,7 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
     var capturedPiece = get(move.to.file, move.to.rank);
     if (capturedPiece) {
       matrix[move.to.file][move.to.rank] = null;
-      // TODO: capturedPiece.rendered.remove();
+      capturedPiece.rendered.remove();
     }
 
     // push to history
