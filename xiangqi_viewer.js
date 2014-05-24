@@ -267,10 +267,41 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
   initialize();
 }
 
+XiangqiViewer.StraightMover = function() {
+  this.getMove = function(position, instruction) {
+    var operator = instruction[2];
+    var destination = parseInt(instruction[3]);
+    var to = $.extend(true, {}, position);
+
+    if (operator === '-') {
+      if (this.red) {
+        to.rank += destination;
+      } else {
+        to.rank -= destination;
+      }
+    } else if (operator === '+') {
+      if (this.red) {
+        to.rank -= destination;
+      } else {
+        to.rank += destination;
+      }
+    } else {
+      if (this.red) {
+        to.file = 9 - destination;
+      } else {
+        to = destination - 1;
+      }
+    }
+
+    return {from: position, to: to};
+  };
+};
+
 XiangqiViewer.Chariot = function(red) {
-  this.code = 'r';
-  this.red = red;
-  this.spriteUrl = function() {
+  var me = new XiangqiViewer.StraightMover();
+  me.code = 'r';
+  me.red = red;
+  me.spriteUrl = function() {
     if (red) {
       return "images/chariot_red.svg";
     } else {
@@ -278,9 +309,9 @@ XiangqiViewer.Chariot = function(red) {
     }
   };
 
-  this.getMove = function(position, instruction) {
-  };
+  return me;
 };
+XiangqiViewer.Chariot.prototype = XiangqiViewer.StraightMover;
 
 XiangqiViewer.Horse = function(red) {
   this.code = 'h';
@@ -328,9 +359,10 @@ XiangqiViewer.Advisor = function(red) {
 };
 
 XiangqiViewer.General = function(red) {
-  this.code = 'g';
-  this.red = red;
-  this.spriteUrl = function() {
+  var me = new XiangqiViewer.StraightMover();
+  me.code = 'g';
+  me.red = red;
+  me.spriteUrl = function() {
     if (red) {
       return "images/general_red.svg";
     } else {
@@ -338,14 +370,14 @@ XiangqiViewer.General = function(red) {
     }
   };
 
-  this.getMove = function(position, instruction) {
-  };
+  return me;
 };
 
 XiangqiViewer.Pawn = function(red) {
-  this.code = 'p';
-  this.red = red;
-  this.spriteUrl = function() {
+  var me = new XiangqiViewer.StraightMover();
+  me.code = 'p';
+  me.red = red;
+  me.spriteUrl = function() {
     if (red) {
       return "images/pawn_red.svg";
     } else {
@@ -353,14 +385,14 @@ XiangqiViewer.Pawn = function(red) {
     }
   };
 
-  this.getMove = function(position, instruction) {
-  };
+  return me;
 };
 
 XiangqiViewer.Cannon = function(red) {
-  this.code = 'c';
-  this.red = red;
-  this.spriteUrl = function() {
+  var me = new XiangqiViewer.StraightMover();
+  me.code = 'c';
+  me.red = red;
+  me.spriteUrl = function() {
     if (red) {
       return "images/cannon_red.svg";
     } else {
@@ -368,31 +400,5 @@ XiangqiViewer.Cannon = function(red) {
     }
   };
 
-  this.getMove = function(position, instruction) {
-    var operator = instruction[2];
-    var destination = parseInt(instruction[3]);
-    var to = $.extend(true, {}, position);
-
-    if (operator === '-') {
-      if (red) {
-        to.rank += destination;
-      } else {
-        to.rank -= destination;
-      }
-    } else if (operator === '+') {
-      if (red) {
-        to.rank -= destination;
-      } else {
-        to.rank += destination;
-      }
-    } else {
-      if (red) {
-        to.file = 9 - destination;
-      } else {
-        to = destination - 1;
-      }
-    }
-
-    return {from: position, to: to};
-  };
+  return me;
 };
