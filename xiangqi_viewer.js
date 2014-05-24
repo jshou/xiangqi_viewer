@@ -289,7 +289,7 @@ XiangqiViewer.StraightMover = function() {
       if (this.red) {
         to.file = 9 - destination;
       } else {
-        to = destination - 1;
+        to.file = destination - 1;
       }
     }
 
