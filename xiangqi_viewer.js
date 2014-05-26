@@ -22,7 +22,7 @@ XiangqiViewer.BoardRenderer = function(element, cellSize, strokeWidth) {
 
   var root = SVG('xiangqi-example').width(width).height(height);
 
-  this.draw = function(selector) {
+  this.draw = function() {
     // horizontal
     drawHorizontalLines();
     drawVerticalLines(topBorder, riverTop);
@@ -116,9 +116,11 @@ XiangqiViewer.BoardRenderer = function(element, cellSize, strokeWidth) {
   return this;
 };
 
-XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
-  var renderer = new XiangqiViewer.BoardRenderer(selector, cellSize, strokeWidth);
+XiangqiViewer.Board = function(element, cellSize, strokeWidth) {
+  var renderer = new XiangqiViewer.BoardRenderer(element, cellSize, strokeWidth);
   renderer.draw();
+
+  var uiRenderer = new XiangqiViewer.UIRenderer(element, this);
 
   var WIDTH = 9
   var HEIGHT = 10
@@ -226,6 +228,8 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
       var move = moveList[this.current];
       this.runMove(move.instruction, move.red);
       this.current++;
+
+      return move;
     }
   };
 
@@ -295,6 +299,25 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
 
   initialize();
 }
+
+XiangqiViewer.UIRenderer = function(element, board) {
+  var moveViewer = $('<div class="xqv-move-viewer" style="position:relative;"></div>');
+  var nextButton = $('<input type="button" class="xqv-next-move" value="->" style="float: left;">');
+  var currentMove = $('<div class="xqv-current-move" style="float: left; margin-left: 10px;"></div>');
+  var analysis = $('<div class="xqv-analysis" style="clear: both; padding-top: 5px;"></div>');
+  moveViewer.append(nextButton);
+  moveViewer.append(currentMove);
+  moveViewer.append(analysis);
+
+  nextButton.click(function() {
+    var move = board.nextMove();
+    if (move) {
+      currentMove.text(move.instruction);
+    }
+  });
+
+  element.append(moveViewer);
+};
 
 XiangqiViewer.Piece = function() {
   this.getFile = function(instructionFile) {
