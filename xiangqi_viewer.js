@@ -343,6 +343,27 @@ XiangqiViewer.Board = function(element, cellSize, strokeWidth) {
     highlightLastMove();
   }
 
+  var pieceLegend = {
+    r: XiangqiViewer.Chariot,
+    h: XiangqiViewer.Horse,
+    e: XiangqiViewer.Elephant,
+    a: XiangqiViewer.Advisor,
+    g: XiangqiViewer.General,
+    p: XiangqiViewer.Pawn,
+    c: XiangqiViewer.Cannon
+  };
+  // sample positionData:
+  // var positionData = [
+  //   {code: 'e', red: false, file: 2, rank: 0},
+  //   {code: 'r', red: true, file: 0, rank: 8},
+  // ];
+  this.place = function(positionData) {
+    for (var i = 0; i < positionData.length; i++) {
+      var d = positionData[i];
+      place(d.file, d.rank, new pieceLegend[d.code](d.red));
+    }
+  };
+
   this.defaultSetup = function() {
     place(0, 0, new XiangqiViewer.Chariot(false));
     place(1, 0, new XiangqiViewer.Horse(false));
