@@ -141,13 +141,11 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
     return matrix[file][rank];
   };
 
-  var place = function(x, y, piece) {
-    if (x < 0 || y < 0 || x >= WIDTH || y >= HEIGHT) {
-      throw "x, y coords are out of bounds";
-    }
+  var place = function(file, rank, piece) {
+    validatePosition({file: file, rank: rank});
 
-    matrix[x][y] = piece;
-    piece.rendered = renderer.putPiece(x, y, piece);
+    matrix[file][rank] = piece;
+    piece.rendered = renderer.putPiece(file, rank, piece);
   };
 
   var searchForward = function(pieceCode, red) {
@@ -199,7 +197,20 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
 
       throw "no piece on this file";
     }
-  }
+  };
+
+  var validatePosition = function(position) {
+    if (position == null || position.file == null || position.rank == null) {
+      throw "Invalid position object";
+    }
+
+    var file = position.file;
+    var rank = position.rank;
+
+    if (file < 0 || file > WIDTH - 1 || rank < 0 || rank > HEIGHT - 1){
+      throw "Illegal position returned";
+    }
+  };
 
   this.runMove = function(instruction, red) {
     if (instruction.length != 4) {
@@ -209,6 +220,7 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
 
     var positionedPiece = getPositionedPiece(instruction, red);
     var move = positionedPiece.piece.getMove(positionedPiece.position, instruction);
+    validatePosition(move.to);
 
     // remove captured piece
     var capturedPiece = get(move.to.file, move.to.rank);
@@ -282,23 +294,39 @@ XiangqiViewer.StraightMover = function() {
   me.getMove = function(position, instruction) {
     var operator = instruction[2];
     var destination = parseInt(instruction[3]);
+    var direction = this.red ? -1 : 1;
     var to = $.extend(true, {}, position);
 
     if (operator === '-') {
-      if (this.red) {
-        to.rank += destination;
-      } else {
-        to.rank -= destination;
-      }
+      to.rank -= destination * direction;
     } else if (operator === '+') {
-      if (this.red) {
-        to.rank -= destination;
-      } else {
-        to.rank += destination;
-      }
+      to.rank += destination * direction;
     } else {
       to.file = me.getFile(destination);
     }
+
+    return {from: position, to: to};
+  };
+
+  return me;
+};
+
+XiangqiViewer.DiagonalMover = function() {
+  var me = new XiangqiViewer.Piece();
+
+  me.getMove = function(position, instruction) {
+    var operator = instruction[2];
+    var destination = parseInt(instruction[3]);
+    var to = $.extend(true, {}, position);
+    var direction = this.red ? -1 : 1;
+
+    if (operator === '-') {
+      to.rank -= this.distance * direction;
+    } else {
+      to.rank += this.distance * direction;
+    }
+
+    to.file = me.getFile(destination);
 
     return {from: position, to: to};
   };
@@ -356,9 +384,11 @@ XiangqiViewer.Horse = function(red) {
 };
 
 XiangqiViewer.Elephant = function(red) {
-  this.code = 'e';
-  this.red = red;
-  this.spriteUrl = function() {
+  var me = new XiangqiViewer.DiagonalMover();
+  me.code = 'e';
+  me.red = red;
+  me.distance = 2;
+  me.spriteUrl = function() {
     if (red) {
       return "images/elephant_red.svg";
     } else {
@@ -366,14 +396,15 @@ XiangqiViewer.Elephant = function(red) {
     }
   };
 
-  this.getMove = function(position, instruction) {
-  };
+  return me;
 };
 
 XiangqiViewer.Advisor = function(red) {
-  this.code = 'a';
-  this.red = red;
-  this.spriteUrl = function() {
+  var me = new XiangqiViewer.DiagonalMover();
+  me.code = 'a';
+  me.red = red;
+  me.distance = 1;
+  me.spriteUrl = function() {
     if (red) {
       return "images/adviser_red.svg";
     } else {
@@ -381,8 +412,7 @@ XiangqiViewer.Advisor = function(red) {
     }
   };
 
-  this.getMove = function(position, instruction) {
-  };
+  return me;
 };
 
 XiangqiViewer.General = function(red) {
