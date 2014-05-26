@@ -141,13 +141,11 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
     return matrix[file][rank];
   };
 
-  var place = function(x, y, piece) {
-    if (x < 0 || y < 0 || x >= WIDTH || y >= HEIGHT) {
-      throw "x, y coords are out of bounds";
-    }
+  var place = function(file, rank, piece) {
+    validatePosition({file: file, rank: rank});
 
-    matrix[x][y] = piece;
-    piece.rendered = renderer.putPiece(x, y, piece);
+    matrix[file][rank] = piece;
+    piece.rendered = renderer.putPiece(file, rank, piece);
   };
 
   var searchForward = function(pieceCode, red) {
@@ -199,7 +197,20 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
 
       throw "no piece on this file";
     }
-  }
+  };
+
+  var validatePosition = function(position) {
+    if (position == null || position.file == null || position.rank == null) {
+      throw "Invalid position object";
+    }
+
+    var file = position.file;
+    var rank = position.rank;
+
+    if (file < 0 || file > WIDTH - 1 || rank < 0 || rank > HEIGHT - 1){
+      throw "Illegal position returned";
+    }
+  };
 
   this.runMove = function(instruction, red) {
     if (instruction.length != 4) {
@@ -209,6 +220,7 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
 
     var positionedPiece = getPositionedPiece(instruction, red);
     var move = positionedPiece.piece.getMove(positionedPiece.position, instruction);
+    validatePosition(move.to);
 
     // remove captured piece
     var capturedPiece = get(move.to.file, move.to.rank);
