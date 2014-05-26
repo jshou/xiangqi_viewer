@@ -5,6 +5,7 @@ XiangqiViewer.BoardRenderer = function(element, cellSize, strokeWidth) {
   var BOARD_WIDTH = 8;
   var BOARD_HEIGHT = 9;
   var BOARD_COLOR = 'rgb(6, 120, 155)';
+  var HIGHLIGHT_COLOR = 'rgba(34, 139, 34, 0.7)';
   var MARGIN = cellSize * 0.70;
   var XSIZE = 2;
   var PIECE_SIZE = 0.85 * cellSize;
@@ -21,6 +22,7 @@ XiangqiViewer.BoardRenderer = function(element, cellSize, strokeWidth) {
   var dotDistance = 2 * strokeWidth;
 
   var root = SVG('xiangqi-example').width(width).height(height);
+  var highlighted = [];
 
   this.draw = function() {
     // horizontal
@@ -111,6 +113,34 @@ XiangqiViewer.BoardRenderer = function(element, cellSize, strokeWidth) {
 
   this.movePiece = function(file, rank, piece) {
     piece.rendered.move(getX(file), getY(rank));
+  };
+
+  var highlight = function(position) {
+    var x = getX(position.file) - (PIECE_SIZE * 0.2 / 2);
+    var y = getY(position.rank) - (PIECE_SIZE * 0.2 / 2);
+
+    return root.circle(PIECE_SIZE * 1.2)
+      .move(x, y)
+      .fill('none')
+      .stroke({
+        width: strokeWidth,
+        color: HIGHLIGHT_COLOR
+      });
+  };
+
+  this.highlightMove = function(move) {
+    // clear existing highlights
+    while (highlighted.length > 0) {
+      highlighted.pop().remove();
+    }
+
+    if (move) {
+      // draw new ones
+      var from = highlight(move.from);
+      var to = highlight(move.to);
+      highlighted.push(from);
+      highlighted.push(to);
+    }
   };
 
   return this;
@@ -250,8 +280,12 @@ XiangqiViewer.Board = function(element, cellSize, strokeWidth) {
         matrix[toFile][toRank] = null;
       }
 
+      // put current instruction in return
       this.next--;
       lastMove.currentInstruction = getPreviousInstruction(this.next);
+
+      // highlight last move
+      highlightLastMove();
 
       return lastMove;
     }
@@ -265,6 +299,11 @@ XiangqiViewer.Board = function(element, cellSize, strokeWidth) {
 
       return move;
     }
+  };
+
+  var highlightLastMove = function() {
+    var lastMove = history[history.length - 1];
+    renderer.highlightMove(lastMove);
   };
 
   this.runMove = function(instruction, red) {
@@ -299,6 +338,9 @@ XiangqiViewer.Board = function(element, cellSize, strokeWidth) {
 
     //rerender
     renderer.movePiece(move.to.file, move.to.rank, positionedPiece.piece);
+
+    // highlight move
+    highlightLastMove();
   }
 
   this.defaultSetup = function() {
