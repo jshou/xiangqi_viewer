@@ -124,6 +124,7 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
   var HEIGHT = 10
   var matrix;
   var history;
+  var moveList;
 
   var initialize = function() {
     history = [];
@@ -209,6 +210,22 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
 
     if (file < 0 || file > WIDTH - 1 || rank < 0 || rank > HEIGHT - 1){
       throw "Illegal position returned";
+    }
+  };
+
+  this.setMoveList = function(moves) {
+    moveList = moves;
+  };
+
+  this.nextMove = function() {
+    if (this.current == null) {
+      this.current = 0;
+    }
+
+    if (this.current < moveList.length) {
+      var move = moveList[this.current];
+      this.runMove(move.instruction, move.red);
+      this.current++;
     }
   };
 

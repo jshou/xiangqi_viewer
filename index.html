@@ -22,11 +22,8 @@
         {instruction: 'a6+5', red: true}
       ];
 
-      for (var i = 0; i < moves.length; i++) {
-        var move = moves[i];
+      board.setMoveList(moves);
 
-        board.runMove(move.instruction, move.red);
-      };
     </script>
   </body>
 </html>
