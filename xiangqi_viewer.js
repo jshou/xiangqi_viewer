@@ -251,9 +251,9 @@ XiangqiViewer.Board = function(element, cellSize, strokeWidth) {
     moveList = moves;
   };
 
-  var getPreviousInstruction = function(n) {
-    if (n > 0 && n < moveList.length) {
-      return moveList[n - 1].instruction;
+  var getInstruction = function(n) {
+    if (n >= 0 && n < moveList.length) {
+      return moveList[n].instruction;
     } else {
       return '';
     }
@@ -282,7 +282,7 @@ XiangqiViewer.Board = function(element, cellSize, strokeWidth) {
 
       // put current instruction in return
       this.next--;
-      lastMove.currentInstruction = getPreviousInstruction(this.next);
+      lastMove.prevInstruction = getInstruction(this.next - 1);
 
       // highlight last move
       highlightLastMove();
