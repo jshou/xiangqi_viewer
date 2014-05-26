@@ -127,6 +127,8 @@ XiangqiViewer.Board = function(element, cellSize, strokeWidth) {
   var matrix;
   var history;
   var moveList;
+  var currentInstruction = '';
+  this.next = 0;
 
   var initialize = function() {
     history = [];
@@ -219,15 +221,47 @@ XiangqiViewer.Board = function(element, cellSize, strokeWidth) {
     moveList = moves;
   };
 
-  this.nextMove = function() {
-    if (this.current == null) {
-      this.current = 0;
+  var getPreviousInstruction = function(n) {
+    if (n > 0 && n < moveList.length) {
+      return moveList[n - 1].instruction;
+    } else {
+      return '';
     }
+  };
 
-    if (this.current < moveList.length) {
-      var move = moveList[this.current];
+  this.prevMove = function() {
+    var lastMove = history.pop();
+
+    if (lastMove) {
+      var piece = lastMove.piece;
+      var toFile = lastMove.to.file;
+      var toRank = lastMove.to.rank;
+
+      // move piece back
+      matrix[lastMove.from.file][lastMove.from.rank] = piece;
+      renderer.movePiece(lastMove.from.file, lastMove.from.rank, piece);
+
+      // rerender captured piece, if any
+      var capturedPiece = lastMove.capturedPiece;
+      if (capturedPiece) {
+        matrix[toFile][toRank] = capturedPiece;
+        capturedPiece.rendered = renderer.putPiece(toFile, toRank, capturedPiece);
+      } else {
+        matrix[toFile][toRank] = null;
+      }
+
+      this.next--;
+      lastMove.currentInstruction = getPreviousInstruction(this.next);
+
+      return lastMove;
+    }
+  };
+
+  this.nextMove = function() {
+    if (this.next < moveList.length) {
+      var move = moveList[this.next];
       this.runMove(move.instruction, move.red);
-      this.current++;
+      this.next++;
 
       return move;
     }
@@ -251,7 +285,13 @@ XiangqiViewer.Board = function(element, cellSize, strokeWidth) {
     }
 
     // push to history
-    history.push({from: move.from, to: move.to, capturedPiece: capturedPiece});
+    history.push({
+      to: move.to,
+      from: move.from,
+      piece: positionedPiece.piece,
+      capturedPiece: capturedPiece,
+      instruction: instruction,
+    });
 
     // update matrix
     matrix[move.from.file][move.from.rank] = null;
@@ -302,12 +342,21 @@ XiangqiViewer.Board = function(element, cellSize, strokeWidth) {
 
 XiangqiViewer.UIRenderer = function(element, board) {
   var moveViewer = $('<div class="xqv-move-viewer" style="position:relative;"></div>');
+  var prevButton = $('<input type="button" class="xqv-prev-move" value="<-" style="float: left;">');
   var nextButton = $('<input type="button" class="xqv-next-move" value="->" style="float: left;">');
   var currentMove = $('<div class="xqv-current-move" style="float: left; margin-left: 10px;"></div>');
   var analysis = $('<div class="xqv-analysis" style="clear: both; padding-top: 5px;"></div>');
+  moveViewer.append(prevButton);
   moveViewer.append(nextButton);
   moveViewer.append(currentMove);
   moveViewer.append(analysis);
+
+  prevButton.click(function() {
+    var move = board.prevMove();
+    if (move) {
+      currentMove.text(move.prevInstruction);
+    }
+  });
 
   nextButton.click(function() {
     var move = board.nextMove();
