@@ -1,7 +1,7 @@
 var XiangqiViewer = {}
 window.XiangqiViewer = XiangqiViewer;
 
-XiangqiViewer.BoardRenderer = function(element, cellSize, strokeWidth) {
+XiangqiViewer.BoardRenderer = function(selector, cellSize, strokeWidth) {
   var BOARD_WIDTH = 8;
   var BOARD_HEIGHT = 9;
   var BOARD_COLOR = 'rgb(6, 120, 155)';
@@ -21,7 +21,7 @@ XiangqiViewer.BoardRenderer = function(element, cellSize, strokeWidth) {
   var riverBot = Math.ceil(BOARD_HEIGHT/2) * cellSize + MARGIN;
   var dotDistance = 2 * strokeWidth;
 
-  var root = SVG('xiangqi-example').width(width).height(height);
+  var root = SVG(selector).width(width).height(height);
   var highlighted = [];
 
   this.draw = function() {
@@ -146,8 +146,9 @@ XiangqiViewer.BoardRenderer = function(element, cellSize, strokeWidth) {
   return this;
 };
 
-XiangqiViewer.Board = function(element, cellSize, strokeWidth) {
-  var renderer = new XiangqiViewer.BoardRenderer(element, cellSize, strokeWidth);
+XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
+  var element = $('#' + selector);
+  var renderer = new XiangqiViewer.BoardRenderer(selector, cellSize, strokeWidth);
   renderer.draw();
 
   var uiRenderer = new XiangqiViewer.UIRenderer(element, this);
