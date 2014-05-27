@@ -8,7 +8,7 @@ browser. See the source of index.html for an example.
 
 Xiangqi Viewer depends on jquery and snap.svg, so include both libraries before including xiangqi\_viewer.js.
 
-```
+```html
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="snap.svg-min.js"></script>
 <script type="text/javascript" src="xiangqi_viewer.js"></script>
@@ -18,7 +18,7 @@ Xiangqi Viewer also has some required images. Copy the "images/xiangqi_viewer" d
 
 Next, initialize a XiangqiViewer.Board. 
 
-```
+```html
 <div id="xiangqi-example"></div>
 
 <script>
@@ -31,7 +31,7 @@ Next, initialize a XiangqiViewer.Board.
 
 Then, either place pieces on the board one by one:
 
-```
+```javascript
 board.place([
   {code: 'e', red: false, file: 2, rank: 0}, // Files are counted from the left, from 0 to 8, ranks are counted from the top, from 0 to 9
   {code: 'r', red: true, file: 0, rank: 8},
@@ -51,13 +51,13 @@ The piece codes are as follows:
 
 or use the default positioning:
 
-```
+```javascript
 board.defaultSetup();
 ```
 
 Finally, add the list of moves:
 
-```
+```javascript
 board.setMoveList([
   {instruction: 'c2=5', red: true, analysis: 'This is the most common opening. It allows the cannon to control the center line.'},
   {instruction: 'c8=5', red: false, analysis: 'The parallel cannon defense.'},
