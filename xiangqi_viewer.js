@@ -410,10 +410,12 @@ XiangqiViewer.UIRenderer = function(element, board) {
   var prevButton = $('<input type="button" class="xqv-prev-move" value="<-" style="float: left;">');
   var nextButton = $('<input type="button" class="xqv-next-move" value="->" style="float: left;">');
   var currentMove = $('<div class="xqv-current-move" style="float: left; margin-left: 10px;"></div>');
-  var analysis = $('<div class="xqv-analysis" style="clear: both; padding-top: 5px;"></div>');
+  var analysisLabel = $('<div class="xqv-analysis-label" style="clear: both; padding-top: 10px;">Notes:</div>');
+  var analysis = $('<textarea class="xqv-analysis" style="margin-top: 10px; width: 100%; height: 100px;" readonly/>');
   moveViewer.append(prevButton);
   moveViewer.append(nextButton);
   moveViewer.append(currentMove);
+  moveViewer.append(analysisLabel);
   moveViewer.append(analysis);
 
   prevButton.click(function() {
