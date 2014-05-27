@@ -33,7 +33,9 @@ Then, either place pieces on the board one by one:
 
 ```javascript
 board.place([
-  {code: 'e', red: false, file: 2, rank: 0}, // Files are counted from the left, from 0 to 8, ranks are counted from the top, from 0 to 9
+  // files are counted from the left, from 0 to 8
+  // ranks are counted from the top, from 0 to 9
+  {code: 'e', red: false, file: 2, rank: 0},
   {code: 'r', red: true, file: 0, rank: 8},
 ]);
 ```
@@ -59,9 +61,9 @@ Finally, add the list of moves:
 
 ```javascript
 board.setMoveList([
-  {instruction: 'c2=5', red: true, analysis: 'This is the most common opening. It allows the cannon to control the center line.'},
+  {instruction: 'c2=5', red: true, analysis: 'This is the most common opening.'},
   {instruction: 'c8=5', red: false, analysis: 'The parallel cannon defense.'},
-  {instruction: 'h2+3', red: true, analysis: "Red's horse comes up to defend the center pawn."},
+  {instruction: 'h2+3', red: true, analysis: "Horse comes up to defend the center."},
   {instruction: 'e3+1', red: false, analysis: "This is a terrible move."},
   {instruction: 'a6+5', red: true, analysis: "This is a defensive move."}
 ]);
