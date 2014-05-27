@@ -21,7 +21,8 @@ XiangqiViewer.BoardRenderer = function(selector, cellSize, strokeWidth) {
   var riverBot = Math.ceil(BOARD_HEIGHT/2) * cellSize + MARGIN;
   var dotDistance = 2 * strokeWidth;
 
-  var root = SVG(selector).width(width).height(height);
+  $(selector).append('<svg width=' + width + ' height=' + height + '/>');
+  var root = Snap(selector + ' svg');
   var highlighted = [];
 
   this.draw = function() {
@@ -46,9 +47,9 @@ XiangqiViewer.BoardRenderer = function(selector, cellSize, strokeWidth) {
   };
 
   var drawBoardLine = function(x1, y1, x2, y2) {
-    root.line(x1, y1, x2, y2).stroke({
-      color: BOARD_COLOR,
-      width: strokeWidth
+    root.line(x1, y1, x2, y2).attr({
+      stroke: BOARD_COLOR,
+      strokeWidth: strokeWidth
     });
   };
 
@@ -83,15 +84,13 @@ XiangqiViewer.BoardRenderer = function(selector, cellSize, strokeWidth) {
   // x and y are from 0 to (n - 1)
   var drawDots = function(x, y, isRight) {
     var directionMultipler = isRight ? -1 : 1;
-    root.rect(strokeWidth, strokeWidth).move(
-      MARGIN + x * cellSize - dotDistance * directionMultipler - (strokeWidth / 2),
-      MARGIN + y * cellSize - dotDistance - (strokeWidth / 2)
-    ).attr({fill: BOARD_COLOR});
+    var x1 = MARGIN + x * cellSize - dotDistance * directionMultipler - (strokeWidth / 2);
+    var y1 = MARGIN + y * cellSize - dotDistance - (strokeWidth / 2);
+    root.rect(x1, y1, strokeWidth, strokeWidth).attr({fill: BOARD_COLOR});
 
-    root.rect(strokeWidth, strokeWidth).move(
-      MARGIN + x * cellSize - dotDistance * directionMultipler - (strokeWidth / 2),
-      MARGIN + y * cellSize + dotDistance - (strokeWidth / 2)
-    ).attr({fill: BOARD_COLOR});
+    var x2 = MARGIN + x * cellSize - dotDistance * directionMultipler - (strokeWidth / 2);
+    var y2 = MARGIN + y * cellSize + dotDistance - (strokeWidth / 2);
+    root.rect(x2, y2, strokeWidth, strokeWidth).attr({fill: BOARD_COLOR});
   };
 
   var getX = function(file) {
@@ -103,28 +102,22 @@ XiangqiViewer.BoardRenderer = function(selector, cellSize, strokeWidth) {
   };
 
   this.putPiece = function(file, rank, piece) {
-    return root.image(piece.spriteUrl())
-      .move(getX(file), getY(rank))
-      .attr({
-        width: PIECE_SIZE,
-        height: PIECE_SIZE
-      });
+    return root.image(piece.spriteUrl(), getX(file), getY(rank), PIECE_SIZE, PIECE_SIZE);
   }
 
   this.movePiece = function(file, rank, piece) {
-    piece.rendered.move(getX(file), getY(rank));
+    piece.rendered.attr({x: getX(file), y: getY(rank)});
   };
 
   var highlight = function(position) {
-    var x = getX(position.file) - (PIECE_SIZE * 0.2 / 2);
-    var y = getY(position.rank) - (PIECE_SIZE * 0.2 / 2);
+    var x = getX(position.file) + (PIECE_SIZE / 2);
+    var y = getY(position.rank) + (PIECE_SIZE / 2);
 
-    return root.circle(PIECE_SIZE * 1.2)
-      .move(x, y)
-      .fill('none')
-      .stroke({
-        width: strokeWidth,
-        color: HIGHLIGHT_COLOR
+    return root.circle(x, y, PIECE_SIZE * 1.2 / 2)
+      .attr({
+        fill: 'none',
+        stroke: HIGHLIGHT_COLOR,
+        strokeWidth: strokeWidth,
       });
   };
 
@@ -147,7 +140,7 @@ XiangqiViewer.BoardRenderer = function(selector, cellSize, strokeWidth) {
 };
 
 XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
-  var element = $('#' + selector);
+  var element = $(selector);
   var renderer = new XiangqiViewer.BoardRenderer(selector, cellSize, strokeWidth);
   renderer.draw();
 
