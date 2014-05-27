@@ -245,11 +245,11 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
     moveList = moves;
   };
 
-  var getInstruction = function(n) {
+  var getMove = function(n) {
     if (n >= 0 && n < moveList.length) {
-      return moveList[n].instruction;
+      return moveList[n];
     } else {
-      return '';
+      return null;
     }
   };
 
@@ -274,9 +274,16 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
         matrix[toFile][toRank] = null;
       }
 
-      // put current instruction in return
+      // put current instruction and analysis in return
       this.next--;
-      lastMove.prevInstruction = getInstruction(this.next - 1);
+      var prevMove = getMove(this.next - 1);
+      if (prevMove) {
+        lastMove.prevInstruction = prevMove.instruction;
+        lastMove.analysis = prevMove.analysis || '';
+      } else {
+        lastMove.prevInstruction = '';
+        lastMove.analysis = '';
+      }
 
       // highlight last move
       highlightLastMove();
@@ -288,7 +295,7 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
   this.nextMove = function() {
     if (this.next < moveList.length) {
       var move = moveList[this.next];
-      this.runMove(move.instruction, move.red);
+      this.runMove(move.instruction, move.red, move.analysis);
       this.next++;
 
       return move;
@@ -300,7 +307,7 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
     renderer.highlightMove(lastMove);
   };
 
-  this.runMove = function(instruction, red) {
+  this.runMove = function(instruction, red, analysis) {
     if (instruction.length != 4) {
       throw "illegal instruction format";
     }
@@ -324,6 +331,7 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
       piece: positionedPiece.piece,
       capturedPiece: capturedPiece,
       instruction: instruction,
+      analysis: analysis
     });
 
     // update matrix
@@ -410,8 +418,10 @@ XiangqiViewer.UIRenderer = function(element, board) {
 
   prevButton.click(function() {
     var move = board.prevMove();
+    analysis.text('');
     if (move) {
       currentMove.text(move.prevInstruction);
+      analysis.text(move.analysis);
     }
   });
 
@@ -419,6 +429,7 @@ XiangqiViewer.UIRenderer = function(element, board) {
     var move = board.nextMove();
     if (move) {
       currentMove.text(move.instruction);
+      analysis.text(move.analysis || '');
     }
   });
 
