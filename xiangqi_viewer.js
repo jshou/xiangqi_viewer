@@ -493,9 +493,9 @@ XiangqiViewer.Chariot = function(red) {
   me.red = red;
   me.spriteUrl = function() {
     if (red) {
-      return "images/xiangqi_viewer/chariot_red.svg";
+      return "/images/xiangqi_viewer/chariot_red.svg";
     } else {
-      return "images/xiangqi_viewer/chariot_black.svg";
+      return "/images/xiangqi_viewer/chariot_black.svg";
     }
   };
 
@@ -508,9 +508,9 @@ XiangqiViewer.Horse = function(red) {
   me.red = red;
   me.spriteUrl = function() {
     if (red) {
-      return "images/xiangqi_viewer/horse_red.svg";
+      return "/images/xiangqi_viewer/horse_red.svg";
     } else {
-      return "images/xiangqi_viewer/horse_black.svg";
+      return "/images/xiangqi_viewer/horse_black.svg";
     }
   };
 
@@ -543,9 +543,9 @@ XiangqiViewer.Elephant = function(red) {
   me.distance = 2;
   me.spriteUrl = function() {
     if (red) {
-      return "images/xiangqi_viewer/elephant_red.svg";
+      return "/images/xiangqi_viewer/elephant_red.svg";
     } else {
-      return "images/xiangqi_viewer/elephant_black.svg";
+      return "/images/xiangqi_viewer/elephant_black.svg";
     }
   };
 
@@ -559,9 +559,9 @@ XiangqiViewer.Advisor = function(red) {
   me.distance = 1;
   me.spriteUrl = function() {
     if (red) {
-      return "images/xiangqi_viewer/adviser_red.svg";
+      return "/images/xiangqi_viewer/adviser_red.svg";
     } else {
-      return "images/xiangqi_viewer/adviser_black.svg";
+      return "/images/xiangqi_viewer/adviser_black.svg";
     }
   };
 
@@ -574,9 +574,9 @@ XiangqiViewer.General = function(red) {
   me.red = red;
   me.spriteUrl = function() {
     if (red) {
-      return "images/xiangqi_viewer/general_red.svg";
+      return "/images/xiangqi_viewer/general_red.svg";
     } else {
-      return "images/xiangqi_viewer/general_black.svg";
+      return "/images/xiangqi_viewer/general_black.svg";
     }
   };
 
@@ -589,9 +589,9 @@ XiangqiViewer.Pawn = function(red) {
   me.red = red;
   me.spriteUrl = function() {
     if (red) {
-      return "images/xiangqi_viewer/pawn_red.svg";
+      return "/images/xiangqi_viewer/pawn_red.svg";
     } else {
-      return "images/xiangqi_viewer/pawn_black.svg";
+      return "/images/xiangqi_viewer/pawn_black.svg";
     }
   };
 
@@ -604,9 +604,9 @@ XiangqiViewer.Cannon = function(red) {
   me.red = red;
   me.spriteUrl = function() {
     if (red) {
-      return "images/xiangqi_viewer/cannon_red.svg";
+      return "/images/xiangqi_viewer/cannon_red.svg";
     } else {
-      return "images/xiangqi_viewer/cannon_black.svg";
+      return "/images/xiangqi_viewer/cannon_black.svg";
     }
   };
 
