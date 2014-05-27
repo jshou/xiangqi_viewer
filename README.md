@@ -29,7 +29,7 @@ Next, initialize a XiangqiViewer.Board.
 </script>
 ```
 
-Then, either place pieces on the board one by one:
+Then, place pieces on the board one by one:
 
 ```javascript
 board.place([
@@ -52,7 +52,7 @@ The piece codes are as follows:
 | p | 兵 | 卒 |
 | c | 炮 | 砲 |
 
-or use the default positioning:
+Or use the default positioning:
 
 ```javascript
 board.defaultSetup();
