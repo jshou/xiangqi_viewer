@@ -40,7 +40,7 @@ board.place([
 
 The piece codes are as follows:
 | Code | Red piece | Black piece |
-----------------------------------
+| ---- | --------- | ----------- |
 | r | 俥 | 車 |
 | h | 傌 | 馬 |
 | e | 相 | 象 |
