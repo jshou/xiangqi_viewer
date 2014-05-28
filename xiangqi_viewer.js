@@ -109,16 +109,16 @@ XiangqiViewer.BoardRenderer = function(selector, cellSize, strokeWidth) {
     piece.rendered.attr({x: getX(file), y: getY(rank)});
   };
 
-  var highlight = function(position) {
+  this.highlight = function(position) {
     var x = getX(position.file) + (PIECE_SIZE / 2);
     var y = getY(position.rank) + (PIECE_SIZE / 2);
 
-    return root.circle(x, y, PIECE_SIZE * 1.2 / 2)
+    highlighted.push(root.circle(x, y, PIECE_SIZE * 1.2 / 2)
       .attr({
         fill: 'none',
         stroke: HIGHLIGHT_COLOR,
         strokeWidth: strokeWidth,
-      });
+      }));
   };
 
   this.highlightMove = function(move) {
@@ -129,10 +129,8 @@ XiangqiViewer.BoardRenderer = function(selector, cellSize, strokeWidth) {
 
     if (move) {
       // draw new ones
-      var from = highlight(move.from);
-      var to = highlight(move.to);
-      highlighted.push(from);
-      highlighted.push(to);
+      this.highlight(move.from);
+      this.highlight(move.to);
     }
   };
 
@@ -171,6 +169,8 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth, ui) {
   var get = function(file, rank) {
     return matrix[file][rank];
   };
+
+  this.highlight = renderer.highlight;
 
   var place = function(file, rank, piece) {
     validatePosition({file: file, rank: rank});
