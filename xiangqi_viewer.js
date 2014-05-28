@@ -139,12 +139,14 @@ XiangqiViewer.BoardRenderer = function(selector, cellSize, strokeWidth) {
   return this;
 };
 
-XiangqiViewer.Board = function(selector, cellSize, strokeWidth) {
+XiangqiViewer.Board = function(selector, cellSize, strokeWidth, ui) {
   var element = $(selector);
   var renderer = new XiangqiViewer.BoardRenderer(selector, cellSize, strokeWidth);
   renderer.draw();
 
-  var uiRenderer = new XiangqiViewer.UIRenderer(element, this);
+  if (ui) {
+    new XiangqiViewer.UIRenderer(element, this);
+  }
 
   var WIDTH = 9
   var HEIGHT = 10
