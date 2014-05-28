@@ -26,8 +26,9 @@ Next, initialize a XiangqiViewer.Board.
 <script>
   var cellSize = 55; // width of each square on the board in pixels
   var lineWidth = 2.5; // width of each line on the chessboard in pixels
+  var enableUI = true; // show/hide the UI for stepping through moves
 
-  var board = new XiangqiViewer.Board('#xiangqi-example', cellSize, lineWidth);
+  var board = new XiangqiViewer.Board('#xiangqi-example', cellSize, lineWidth, enableUI);
 </script>
 ```
 
