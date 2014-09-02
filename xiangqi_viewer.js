@@ -179,7 +179,7 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth, ui) {
     piece.rendered = renderer.putPiece(file, rank, piece);
   };
 
-  var searchForward = function(pieceCode, red) {
+  var searchBackward = function(pieceCode, red) {
     for (var i = 0; i < WIDTH; i++) {
       for (var j = 0; j < HEIGHT; j++) {
         var piece = get(i, j);
@@ -190,7 +190,7 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth, ui) {
     }
   };
 
-  var searchBackward = function(pieceCode, red) {
+  var searchForward = function(pieceCode, red) {
     for (var i = 0; i < WIDTH; i++) {
       for (var j = HEIGHT - 1; j >= 0; j--) {
         var piece = get(i, j);
