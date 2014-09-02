@@ -352,7 +352,7 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth, ui) {
     h: XiangqiViewer.Horse,
     e: XiangqiViewer.Elephant,
     a: XiangqiViewer.Advisor,
-    g: XiangqiViewer.General,
+    k: XiangqiViewer.General,
     p: XiangqiViewer.Pawn,
     c: XiangqiViewer.Cannon
   };
@@ -578,7 +578,7 @@ XiangqiViewer.Advisor = function(red) {
 
 XiangqiViewer.General = function(red) {
   var me = new XiangqiViewer.StraightMover();
-  me.code = 'g';
+  me.code = 'k';
   me.red = red;
   me.spriteUrl = function() {
     if (red) {
