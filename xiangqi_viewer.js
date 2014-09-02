@@ -183,7 +183,7 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth, ui) {
     for (var i = 0; i < WIDTH; i++) {
       for (var j = 0; j < HEIGHT; j++) {
         var piece = get(i, j);
-        if (piece && piece.code == pieceCode) {
+        if (piece && piece.code == pieceCode && piece.red == red) {
           return {piece: piece, position: {file: i, rank: j}};
         }
       }
