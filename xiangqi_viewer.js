@@ -202,13 +202,13 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth, ui) {
   };
 
   var getPositionedPiece = function(instruction, red) {
-    if (instruction[0] == 'f' && red) {
+    if (instruction[1] == '+' && red) {
       return searchBackward(instruction[1], red);
-    } else if (instruction[0] == 'b' && red) {
+    } else if (instruction[1] == '-' && red) {
       return searchForward(instruction[1], red);
-    } else if (instruction[0] == 'f' && !red) {
+    } else if (instruction[1] == '+' && !red) {
       return searchBackward(instruction[1], red);
-    } else if (instruction[0] == 'b' && !red) {
+    } else if (instruction[1] == '-' && !red) {
       return searchForward(instruction[1], red);
     } else {
       var instructionPiece = instruction[0];
