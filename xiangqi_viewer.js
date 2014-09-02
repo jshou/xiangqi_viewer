@@ -203,13 +203,13 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth, ui) {
 
   var getPositionedPiece = function(instruction, red) {
     if (instruction[1] == '+' && red) {
-      return searchBackward(instruction[1], red);
+      return searchBackward(instruction[0], red);
     } else if (instruction[1] == '-' && red) {
-      return searchForward(instruction[1], red);
+      return searchForward(instruction[0], red);
     } else if (instruction[1] == '+' && !red) {
-      return searchBackward(instruction[1], red);
+      return searchBackward(instruction[0], red);
     } else if (instruction[1] == '-' && !red) {
-      return searchForward(instruction[1], red);
+      return searchForward(instruction[0], red);
     } else {
       var instructionPiece = instruction[0];
       var file;
