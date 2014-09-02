@@ -202,13 +202,13 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth, ui) {
   };
 
   var getPositionedPiece = function(instruction, red) {
-    if (instruction[0] == 'f' && red) {
+    if (instruction[1] == '+' && red) {
       return searchBackward(instruction[1], red);
-    } else if (instruction[0] == 'b' && red) {
+    } else if (instruction[1] == '-' && red) {
       return searchForward(instruction[1], red);
-    } else if (instruction[0] == 'f' && !red) {
+    } else if (instruction[1] == '+' && !red) {
       return searchBackward(instruction[1], red);
-    } else if (instruction[0] == 'b' && !red) {
+    } else if (instruction[1] == '-' && !red) {
       return searchForward(instruction[1], red);
     } else {
       var instructionPiece = instruction[0];
@@ -352,7 +352,7 @@ XiangqiViewer.Board = function(selector, cellSize, strokeWidth, ui) {
     h: XiangqiViewer.Horse,
     e: XiangqiViewer.Elephant,
     a: XiangqiViewer.Advisor,
-    g: XiangqiViewer.General,
+    k: XiangqiViewer.General,
     p: XiangqiViewer.Pawn,
     c: XiangqiViewer.Cannon
   };
@@ -578,7 +578,7 @@ XiangqiViewer.Advisor = function(red) {
 
 XiangqiViewer.General = function(red) {
   var me = new XiangqiViewer.StraightMover();
-  me.code = 'g';
+  me.code = 'k';
   me.red = red;
   me.spriteUrl = function() {
     if (red) {
