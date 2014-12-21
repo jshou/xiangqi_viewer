@@ -51,7 +51,7 @@ The piece codes are as follows:
 | h | 傌 | 馬 |
 | e | 相 | 象 |
 | a | 仕 | 士 |
-| g | 帥 | 將 |
+| k | 帥 | 將 |
 | p | 兵 | 卒 |
 | c | 炮 | 砲 |
 
