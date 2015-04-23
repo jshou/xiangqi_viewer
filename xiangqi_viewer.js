@@ -9,6 +9,8 @@ XiangqiViewer.BoardRenderer = function(selector, cellSize, strokeWidth) {
   var MARGIN = cellSize * 0.70;
   var XSIZE = 2;
   var PIECE_SIZE = 0.85 * cellSize;
+  var HIGHLIGHT_ANIMATE_SPEED = 250;
+  var PIECE_ANIMATE_SPEED = 500;
 
   var width = BOARD_WIDTH * cellSize + 2*MARGIN;
   var height = BOARD_HEIGHT * cellSize + 2*MARGIN;
@@ -106,7 +108,7 @@ XiangqiViewer.BoardRenderer = function(selector, cellSize, strokeWidth) {
   }
 
   this.movePiece = function(file, rank, piece) {
-    piece.rendered.animate({x: getX(file), y: getY(rank)}, 1000, mina.easeinout);
+    piece.rendered.animate({x: getX(file), y: getY(rank)}, PIECE_ANIMATE_SPEED, mina.easeinout);
   };
 
   this.highlight = function(position) {
@@ -122,7 +124,7 @@ XiangqiViewer.BoardRenderer = function(selector, cellSize, strokeWidth) {
       })
       .animate({
         opacity: 1
-      }, 250, mina.easein));
+      }, HIGHLIGHT_ANIMATE_SPEED, mina.easein));
   };
 
   this.highlightMove = function(move) {
@@ -130,7 +132,7 @@ XiangqiViewer.BoardRenderer = function(selector, cellSize, strokeWidth) {
 
     // clear existing highlights
     for (var i = 0; i < length; i++) {
-      highlighted[i].animate({ opacity: 0 }, 250, mina.easeout, function(element) {
+      highlighted[i].animate({ opacity: 0 }, HIGHLIGHT_ANIMATE_SPEED, mina.easeout, function(element) {
         element.remove();
         highlighted.splice(i, 1);
       });
