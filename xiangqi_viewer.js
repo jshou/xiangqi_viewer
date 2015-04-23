@@ -106,25 +106,34 @@ XiangqiViewer.BoardRenderer = function(selector, cellSize, strokeWidth) {
   }
 
   this.movePiece = function(file, rank, piece) {
-    piece.rendered.attr({x: getX(file), y: getY(rank)});
+    piece.rendered.animate({x: getX(file), y: getY(rank)}, 1000, mina.easeinout);
   };
 
   this.highlight = function(position) {
     var x = getX(position.file) + (PIECE_SIZE / 2);
     var y = getY(position.rank) + (PIECE_SIZE / 2);
 
-    highlighted.push(root.circle(x, y, PIECE_SIZE * 1.2 / 2)
+    highlighted.push(root.circle(x, y, PIECE_SIZE * 1.2 / 2).prependTo(root)
       .attr({
         fill: 'none',
+        opacity: 0,
         stroke: HIGHLIGHT_COLOR,
         strokeWidth: strokeWidth,
-      }));
+      })
+      .animate({
+        opacity: 1
+      }, 250, mina.easein));
   };
 
   this.highlightMove = function(move) {
+    var length = highlighted.length;
+
     // clear existing highlights
-    while (highlighted.length > 0) {
-      highlighted.pop().remove();
+    for (var i = 0; i < length; i++) {
+      highlighted[i].animate({ opacity: 0 }, 250, mina.easeout, function(element) {
+        element.remove();
+        highlighted.splice(i, 1);
+      });
     }
 
     if (move) {
